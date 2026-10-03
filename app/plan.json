@@ -1,0 +1,818 @@
+{
+ "name": "Health plan",
+ "person": "Example: Alex, 34, wants to lose 8 kg while training 3x a week at home (made-up data, replace with yours)",
+ "startDate": "2026-10-05",
+ "target": {
+  "kcal": 2000,
+  "protein": 140
+ },
+ "sessionsPerWeek": 3,
+ "categories": {
+  "protein": "Meat, fish & eggs",
+  "dairy": "Dairy",
+  "carbs": "Bread, grains & potatoes",
+  "veg": "Fruit & veg",
+  "tins": "Tins & dry goods",
+  "other": "Other"
+ },
+ "rules": [
+  "Protein at every meal",
+  "No liquid calories (water, sparkling water, black coffee, tea)",
+  "Coffee before 14:00",
+  "Kitchen closes 2–3 h before bed",
+  "Evening cravings: tea, sparkling water or protein yoghurt ready"
+ ],
+ "meals": {
+  "oatsSkyr": {
+   "name": "Oats + Skyr + banana",
+   "kcal": 480,
+   "protein": 35,
+   "how": "60 g oats with 250 g Skyr (or Magerquark), 1 banana or a handful of frozen berries.",
+   "buy": [
+    {
+     "name": "Oats (Haferflocken)",
+     "qty": 60,
+     "unit": "g",
+     "cat": "carbs"
+    },
+    {
+     "name": "Skyr",
+     "qty": 250,
+     "unit": "g",
+     "cat": "dairy"
+    },
+    {
+     "name": "Bananas",
+     "qty": 1,
+     "unit": "pcs",
+     "cat": "veg"
+    }
+   ]
+  },
+  "eggsBread": {
+   "name": "3 eggs + Vollkornbrot",
+   "kcal": 450,
+   "protein": 30,
+   "how": "3 eggs (scrambled or boiled), 2 slices Vollkornbrot, tomato or cucumber on the side.",
+   "buy": [
+    {
+     "name": "Eggs",
+     "qty": 3,
+     "unit": "pcs",
+     "cat": "protein"
+    },
+    {
+     "name": "Vollkornbrot",
+     "qty": 2,
+     "unit": "slices",
+     "cat": "carbs"
+    },
+    {
+     "name": "Tomatoes",
+     "qty": 1,
+     "unit": "pcs",
+     "cat": "veg"
+    }
+   ]
+  },
+  "quarkOats": {
+   "name": "Magerquark + oats + banana",
+   "kcal": 470,
+   "protein": 40,
+   "how": "250 g Magerquark, 40 g oats, 1 banana, cinnamon.",
+   "buy": [
+    {
+     "name": "Magerquark",
+     "qty": 250,
+     "unit": "g",
+     "cat": "dairy"
+    },
+    {
+     "name": "Oats (Haferflocken)",
+     "qty": 40,
+     "unit": "g",
+     "cat": "carbs"
+    },
+    {
+     "name": "Bananas",
+     "qty": 1,
+     "unit": "pcs",
+     "cat": "veg"
+    }
+   ]
+  },
+  "weekendBreakfast": {
+   "name": "Weekend breakfast (plate rule)",
+   "kcal": 500,
+   "protein": 30,
+   "how": "Sit down for it. Protein first (eggs, Quark, cheese), half the plate fruit/veg, one roll max.",
+   "buy": [
+    {
+     "name": "Eggs",
+     "qty": 2,
+     "unit": "pcs",
+     "cat": "protein"
+    }
+   ]
+  },
+  "skyrFruit": {
+   "name": "Skyr + fruit",
+   "kcal": 250,
+   "protein": 25,
+   "how": "200 g Skyr with an apple or berries.",
+   "buy": [
+    {
+     "name": "Skyr",
+     "qty": 200,
+     "unit": "g",
+     "cat": "dairy"
+    },
+    {
+     "name": "Apples",
+     "qty": 1,
+     "unit": "pcs",
+     "cat": "veg"
+    }
+   ]
+  },
+  "eggsApple": {
+   "name": "2 boiled eggs + apple",
+   "kcal": 230,
+   "protein": 13,
+   "how": "2 eggs from the batch-cooked boiled eggs, 1 apple.",
+   "buy": [
+    {
+     "name": "Eggs",
+     "qty": 2,
+     "unit": "pcs",
+     "cat": "protein"
+    },
+    {
+     "name": "Apples",
+     "qty": 1,
+     "unit": "pcs",
+     "cat": "veg"
+    }
+   ]
+  },
+  "proteinYog": {
+   "name": "Protein yoghurt / pudding",
+   "kcal": 200,
+   "protein": 20,
+   "how": "One cup of high-protein yoghurt or pudding (e.g. 200 g).",
+   "buy": [
+    {
+     "name": "Protein yoghurt",
+     "qty": 1,
+     "unit": "cup",
+     "cat": "dairy"
+    }
+   ]
+  },
+  "huttenVeg": {
+   "name": "Hüttenkäse + veg sticks",
+   "kcal": 220,
+   "protein": 24,
+   "how": "200 g Hüttenkäse with cucumber and carrot sticks.",
+   "buy": [
+    {
+     "name": "Hüttenkäse",
+     "qty": 200,
+     "unit": "g",
+     "cat": "dairy"
+    },
+    {
+     "name": "Cucumber",
+     "qty": 0.5,
+     "unit": "pcs",
+     "cat": "veg"
+    },
+    {
+     "name": "Carrots",
+     "qty": 2,
+     "unit": "pcs",
+     "cat": "veg"
+    }
+   ]
+  },
+  "saladTuna": {
+   "name": "Big salad + tuna + chickpeas",
+   "kcal": 550,
+   "protein": 45,
+   "how": "Salad bag, 1 can tuna, ½ can chickpeas, tomatoes, cucumber, 1 tsp olive oil, lemon.",
+   "buy": [
+    {
+     "name": "Canned tuna",
+     "qty": 1,
+     "unit": "can",
+     "cat": "tins"
+    },
+    {
+     "name": "Chickpeas",
+     "qty": 0.5,
+     "unit": "can",
+     "cat": "tins"
+    },
+    {
+     "name": "Salad bag",
+     "qty": 0.5,
+     "unit": "bag",
+     "cat": "veg"
+    },
+    {
+     "name": "Tomatoes",
+     "qty": 2,
+     "unit": "pcs",
+     "cat": "veg"
+    },
+    {
+     "name": "Cucumber",
+     "qty": 0.5,
+     "unit": "pcs",
+     "cat": "veg"
+    }
+   ]
+  },
+  "wraps": {
+   "name": "Turkey wraps + yoghurt sauce",
+   "kcal": 600,
+   "protein": 45,
+   "how": "2 wholegrain wraps, 150 g turkey strips (pan), salad, 50 g Skyr with garlic and herbs.",
+   "buy": [
+    {
+     "name": "Wholegrain wraps",
+     "qty": 2,
+     "unit": "pcs",
+     "cat": "carbs"
+    },
+    {
+     "name": "Turkey breast",
+     "qty": 150,
+     "unit": "g",
+     "cat": "protein"
+    },
+    {
+     "name": "Salad bag",
+     "qty": 0.5,
+     "unit": "bag",
+     "cat": "veg"
+    },
+    {
+     "name": "Skyr",
+     "qty": 50,
+     "unit": "g",
+     "cat": "dairy"
+    }
+   ]
+  },
+  "curry": {
+   "name": "Chicken & vegetable curry + basmati",
+   "kcal": 600,
+   "protein": 45,
+   "portions": 2,
+   "freezes": true,
+   "how": "Fry onion + curry paste, add 360 g diced chicken, peppers/frozen veg, 200 ml light coconut milk, simmer 15 min. 1 cupped hand rice per plate.",
+   "buy": [
+    {
+     "name": "Chicken breast",
+     "qty": 360,
+     "unit": "g",
+     "cat": "protein"
+    },
+    {
+     "name": "Basmati rice",
+     "qty": 150,
+     "unit": "g",
+     "cat": "carbs"
+    },
+    {
+     "name": "Light coconut milk",
+     "qty": 200,
+     "unit": "ml",
+     "cat": "tins"
+    },
+    {
+     "name": "Peppers",
+     "qty": 2,
+     "unit": "pcs",
+     "cat": "veg"
+    },
+    {
+     "name": "Frozen vegetable mix",
+     "qty": 300,
+     "unit": "g",
+     "cat": "veg"
+    },
+    {
+     "name": "Onions",
+     "qty": 1,
+     "unit": "pcs",
+     "cat": "veg"
+    }
+   ]
+  },
+  "chili": {
+   "name": "Chili con carne + rice",
+   "kcal": 600,
+   "protein": 42,
+   "portions": 2,
+   "freezes": true,
+   "how": "Brown 300 g Rinderhack 5% with onion, add kidney beans, canned tomatoes, pepper, chili/cumin, simmer 20 min. Serve with rice.",
+   "buy": [
+    {
+     "name": "Rinderhack 5%",
+     "qty": 300,
+     "unit": "g",
+     "cat": "protein"
+    },
+    {
+     "name": "Kidney beans",
+     "qty": 1,
+     "unit": "can",
+     "cat": "tins"
+    },
+    {
+     "name": "Canned tomatoes",
+     "qty": 1,
+     "unit": "can",
+     "cat": "tins"
+    },
+    {
+     "name": "Peppers",
+     "qty": 1,
+     "unit": "pcs",
+     "cat": "veg"
+    },
+    {
+     "name": "Onions",
+     "qty": 1,
+     "unit": "pcs",
+     "cat": "veg"
+    },
+    {
+     "name": "Basmati rice",
+     "qty": 150,
+     "unit": "g",
+     "cat": "carbs"
+    }
+   ]
+  },
+  "salmonTray": {
+   "name": "Oven tray: salmon + potatoes + broccoli",
+   "kcal": 620,
+   "protein": 38,
+   "portions": 2,
+   "how": "200 °C: potatoes 15 min first, then add 2 × 150 g salmon and broccoli for 15 min. Lemon, salt, pepper.",
+   "buy": [
+    {
+     "name": "Salmon (frozen)",
+     "qty": 300,
+     "unit": "g",
+     "cat": "protein"
+    },
+    {
+     "name": "Potatoes",
+     "qty": 500,
+     "unit": "g",
+     "cat": "carbs"
+    },
+    {
+     "name": "Broccoli",
+     "qty": 400,
+     "unit": "g",
+     "cat": "veg"
+    }
+   ]
+  },
+  "chickenTray": {
+   "name": "Oven tray: chicken + potatoes + veg",
+   "kcal": 600,
+   "protein": 45,
+   "portions": 2,
+   "how": "200 °C, 30 min: 360 g chicken, potatoes, peppers/broccoli, 1 tbsp oil, paprika.",
+   "buy": [
+    {
+     "name": "Chicken breast",
+     "qty": 360,
+     "unit": "g",
+     "cat": "protein"
+    },
+    {
+     "name": "Potatoes",
+     "qty": 500,
+     "unit": "g",
+     "cat": "carbs"
+    },
+    {
+     "name": "Broccoli",
+     "qty": 300,
+     "unit": "g",
+     "cat": "veg"
+    },
+    {
+     "name": "Peppers",
+     "qty": 1,
+     "unit": "pcs",
+     "cat": "veg"
+    }
+   ]
+  },
+  "bolognese": {
+   "name": "Bolognese + wholegrain pasta",
+   "kcal": 620,
+   "protein": 42,
+   "portions": 2,
+   "freezes": true,
+   "how": "Brown 300 g lean mince with onion + grated carrot, add 500 g passata, simmer 20 min. 80 g dry pasta per plate.",
+   "buy": [
+    {
+     "name": "Rinderhack 5%",
+     "qty": 300,
+     "unit": "g",
+     "cat": "protein"
+    },
+    {
+     "name": "Wholegrain pasta",
+     "qty": 160,
+     "unit": "g",
+     "cat": "carbs"
+    },
+    {
+     "name": "Passata",
+     "qty": 500,
+     "unit": "g",
+     "cat": "tins"
+    },
+    {
+     "name": "Onions",
+     "qty": 1,
+     "unit": "pcs",
+     "cat": "veg"
+    },
+    {
+     "name": "Carrots",
+     "qty": 1,
+     "unit": "pcs",
+     "cat": "veg"
+    }
+   ]
+  },
+  "dal": {
+   "name": "Dal + rice + Skyr raita",
+   "kcal": 600,
+   "protein": 40,
+   "portions": 2,
+   "freezes": true,
+   "how": "200 g red lentils, onion, garlic, canned tomatoes, spinach, cumin/turmeric, 20 min. Raita: 200 g Skyr + grated cucumber.",
+   "buy": [
+    {
+     "name": "Red lentils",
+     "qty": 200,
+     "unit": "g",
+     "cat": "tins"
+    },
+    {
+     "name": "Canned tomatoes",
+     "qty": 1,
+     "unit": "can",
+     "cat": "tins"
+    },
+    {
+     "name": "Spinach (frozen)",
+     "qty": 200,
+     "unit": "g",
+     "cat": "veg"
+    },
+    {
+     "name": "Onions",
+     "qty": 1,
+     "unit": "pcs",
+     "cat": "veg"
+    },
+    {
+     "name": "Basmati rice",
+     "qty": 150,
+     "unit": "g",
+     "cat": "carbs"
+    },
+    {
+     "name": "Skyr",
+     "qty": 200,
+     "unit": "g",
+     "cat": "dairy"
+    },
+    {
+     "name": "Cucumber",
+     "qty": 0.5,
+     "unit": "pcs",
+     "cat": "veg"
+    }
+   ]
+  },
+  "stirfry": {
+   "name": "Egg fried rice / stir fry",
+   "kcal": 580,
+   "protein": 40,
+   "portions": 1,
+   "how": "Leftover or fresh rice, 3 eggs, 100 g chicken, 400 g frozen stir-fry veg, soy sauce. One pan, 10 min.",
+   "buy": [
+    {
+     "name": "Eggs",
+     "qty": 3,
+     "unit": "pcs",
+     "cat": "protein"
+    },
+    {
+     "name": "Chicken breast",
+     "qty": 100,
+     "unit": "g",
+     "cat": "protein"
+    },
+    {
+     "name": "Frozen stir-fry veg",
+     "qty": 400,
+     "unit": "g",
+     "cat": "veg"
+    },
+    {
+     "name": "Basmati rice",
+     "qty": 75,
+     "unit": "g",
+     "cat": "carbs"
+    }
+   ]
+  },
+  "flexible": {
+   "name": "Flexible meal (80/20)",
+   "kcal": 800,
+   "protein": 35,
+   "how": "Pizza night or eating out. Enjoy it, one plate, no \"cheat day\".",
+   "buy": []
+  }
+ },
+ "weeks": [
+  [
+   {
+    "training": "A",
+    "b": "oatsSkyr",
+    "l": "@curry",
+    "s": "skyrFruit",
+    "d": "chili"
+   },
+   {
+    "b": "eggsBread",
+    "l": "@chili",
+    "s": "eggsApple",
+    "d": "curry"
+   },
+   {
+    "training": "B",
+    "b": "oatsSkyr",
+    "l": "saladTuna",
+    "s": "proteinYog",
+    "d": "salmonTray",
+    "prep": "Wednesday top-up (30 min): oven tray dinner tonight, or defrost a frozen portion."
+   },
+   {
+    "b": "quarkOats",
+    "l": "@salmonTray",
+    "s": "huttenVeg",
+    "d": "bolognese"
+   },
+   {
+    "b": "eggsBread",
+    "l": "@bolognese",
+    "s": "skyrFruit",
+    "d": "flexible"
+   },
+   {
+    "training": "C",
+    "b": "oatsSkyr",
+    "l": "wraps",
+    "s": "eggsApple",
+    "d": "dal"
+   },
+   {
+    "b": "weekendBreakfast",
+    "l": "@dal",
+    "s": "proteinYog",
+    "d": "stirfry",
+    "batch": "chili",
+    "prep": "Sunday batch cook (~90 min): a pot of chili (for Monday lunch + 2 freezer boxes), a pot of rice, a tray of roasted veg, 10 boiled eggs."
+   }
+  ],
+  [
+   {
+    "training": "A",
+    "b": "oatsSkyr",
+    "l": "@chili",
+    "s": "skyrFruit",
+    "d": "curry"
+   },
+   {
+    "b": "eggsBread",
+    "l": "@curry",
+    "s": "huttenVeg",
+    "d": "bolognese"
+   },
+   {
+    "training": "B",
+    "b": "oatsSkyr",
+    "l": "@bolognese",
+    "s": "proteinYog",
+    "d": "chickenTray",
+    "prep": "Wednesday top-up (30 min): oven tray dinner tonight, or defrost a frozen portion."
+   },
+   {
+    "b": "quarkOats",
+    "l": "@chickenTray",
+    "s": "eggsApple",
+    "d": "dal"
+   },
+   {
+    "b": "eggsBread",
+    "l": "@dal",
+    "s": "skyrFruit",
+    "d": "flexible"
+   },
+   {
+    "training": "C",
+    "b": "oatsSkyr",
+    "l": "wraps",
+    "s": "proteinYog",
+    "d": "stirfry"
+   },
+   {
+    "b": "weekendBreakfast",
+    "l": "saladTuna",
+    "s": "eggsApple",
+    "d": "salmonTray",
+    "batch": "curry",
+    "prep": "Sunday batch cook (~90 min): a pot of chicken curry (for Monday lunch + freezer), a pot of rice, a tray of roasted veg, 10 boiled eggs."
+   }
+  ]
+ ],
+ "pantry": [
+  {
+   "name": "Oats (Haferflocken)",
+   "cat": "carbs"
+  },
+  {
+   "name": "Basmati rice",
+   "cat": "carbs"
+  },
+  {
+   "name": "Wholegrain pasta",
+   "cat": "carbs"
+  },
+  {
+   "name": "Vollkornbrot (freezer)",
+   "cat": "carbs"
+  },
+  {
+   "name": "Red lentils",
+   "cat": "tins"
+  },
+  {
+   "name": "Canned tuna",
+   "cat": "tins"
+  },
+  {
+   "name": "Kidney beans",
+   "cat": "tins"
+  },
+  {
+   "name": "Chickpeas",
+   "cat": "tins"
+  },
+  {
+   "name": "Canned tomatoes",
+   "cat": "tins"
+  },
+  {
+   "name": "Passata",
+   "cat": "tins"
+  },
+  {
+   "name": "Light coconut milk",
+   "cat": "tins"
+  },
+  {
+   "name": "Frozen vegetable mix",
+   "cat": "veg"
+  },
+  {
+   "name": "Frozen stir-fry veg",
+   "cat": "veg"
+  },
+  {
+   "name": "Frozen berries",
+   "cat": "veg"
+  },
+  {
+   "name": "Spinach (frozen)",
+   "cat": "veg"
+  },
+  {
+   "name": "Salmon (frozen)",
+   "cat": "protein"
+  },
+  {
+   "name": "Eggs",
+   "cat": "protein"
+  },
+  {
+   "name": "Olive oil",
+   "cat": "other"
+  },
+  {
+   "name": "Spices: curry, chili, cumin, paprika, turmeric",
+   "cat": "other"
+  },
+  {
+   "name": "Soy sauce",
+   "cat": "other"
+  },
+  {
+   "name": "Mustard / salsa / hot sauce",
+   "cat": "other"
+  },
+  {
+   "name": "Nuts (portion bags)",
+   "cat": "other"
+  },
+  {
+   "name": "Sugar-free gum (cravings)",
+   "cat": "other"
+  },
+  {
+   "name": "Sparkling water",
+   "cat": "other"
+  },
+  {
+   "name": "Tea",
+   "cat": "other"
+  }
+ ],
+ "tracker": {
+  "startWeight": 86,
+  "goalWeight": 78,
+  "goalDate": "2027-04-30",
+  "milestones": [
+   [
+    "End of Dec 2026",
+    "2026-12-31",
+    83.5
+   ],
+   [
+    "End of Feb 2027",
+    "2027-02-28",
+    80.5
+   ],
+   [
+    "Goal",
+    "2027-04-30",
+    78
+   ]
+  ],
+  "habit": {
+   "label": "Sweets/snacks outside the plan",
+   "weekly": "Avg snacks/day",
+   "freeDays": "Snack-free days"
+  },
+  "drinks": "Alcohol drinks",
+  "dailyRules": [
+   "Protein every meal",
+   "Plate rule",
+   "No liquid calories",
+   "Kitchen closed 2-3h before bed",
+   "Coffee before 14:00 only",
+   "No grazing between meals"
+  ],
+  "sessions": [
+   {
+    "dayOffset": 0,
+    "code": "A",
+    "focus": "Lower body strength"
+   },
+   {
+    "dayOffset": 2,
+    "code": "B",
+    "focus": "Upper body + conditioning"
+   },
+   {
+    "dayOffset": 5,
+    "code": "C",
+    "focus": "Full body circuit"
+   }
+  ],
+  "weeks": 12,
+  "tests": [
+   "Body weight (kg)",
+   "Waist (cm)",
+   "Max push-ups",
+   "Plank hold (s)",
+   "Resting heart rate"
+  ]
+ }
+}

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Health plan</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#2e5e4e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Health plan">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+  :root {
+    --bg: #f4f6f5; --card: #ffffff; --text: #1d2321; --muted: #66706c; --line: #dde3e0;
+    --accent: #2e5e4e; --accent-text: #ffffff; --yes: #c6efce; --yes-text: #145a24;
+    --no: #ffc7ce; --no-text: #7a1020; --warn: #fff2cc; --warn-text: #5c4a00;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121614; --card: #1c2220; --text: #e8eeeb; --muted: #9aa5a0; --line: #2d3532;
+      --accent: #5fa58c; --accent-text: #0d1311; --yes: #1f4a2b; --yes-text: #bdf0c9;
+      --no: #5a1f28; --no-text: #ffd0d6; --warn: #4a4120; --warn-text: #ffe9a8;
+    }
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; font: 16px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+         background: var(--bg); color: var(--text); padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
+  header { padding: calc(14px + env(safe-area-inset-top)) 16px 4px; max-width: 560px; margin: 0 auto;
+           display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  header h1 { margin: 0; font-size: 20px; }
+  header .sub { color: var(--muted); font-size: 13px; }
+  main { padding: 0 16px; max-width: 560px; margin: 0 auto; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin: 12px 0; }
+  .card h2 { margin: 0 0 10px; font-size: 16px; }
+  .row { display: flex; align-items: center; gap: 8px; }
+  .between { justify-content: space-between; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+  input, textarea, select { width: 100%; font: inherit; padding: 10px; border-radius: 8px;
+         border: 1px solid var(--line); background: var(--bg); color: var(--text); }
+  textarea { min-height: 64px; resize: vertical; }
+  button, .btn { font: inherit; border: 0; border-radius: 8px; padding: 10px 14px; cursor: pointer;
+           background: var(--line); color: var(--text); text-decoration: none; display: inline-block; text-align: center; }
+  button.primary, .btn.primary { background: var(--accent); color: var(--accent-text); font-weight: 600; width: 100%; padding: 14px; }
+  button.small { padding: 6px 10px; font-size: 14px; }
+  button:disabled { opacity: .6; }
+  .datebar { display: flex; gap: 8px; align-items: center; }
+  .datebar input { flex: 1; }
+  .datebar .mid { flex: 1; text-align: center; }
+  .yn { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-top: 1px solid var(--line); gap: 8px; }
+  .yn:first-child { border-top: 0; }
+  .yn .btns { display: flex; gap: 6px; flex-shrink: 0; }
+  .yn button { min-width: 52px; }
+  .on-Y { background: var(--yes) !important; color: var(--yes-text) !important; font-weight: 700; }
+  .on-N { background: var(--no) !important; color: var(--no-text) !important; font-weight: 700; }
+  .stat { display: flex; justify-content: space-between; padding: 6px 0; border-top: 1px solid var(--line); gap: 12px; }
+  .stat:first-child { border-top: 0; }
+  .stat b { font-variant-numeric: tabular-nums; text-align: right; }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; background: var(--line); white-space: nowrap; }
+  .pill.Y { background: var(--yes); color: var(--yes-text); }
+  .pill.N, .pill.warn { background: var(--no); color: var(--no-text); }
+  .pill.accent { background: var(--accent); color: var(--accent-text); }
+  .muted { color: var(--muted); font-size: 14px; }
+  .note { background: var(--warn); color: var(--warn-text); border-radius: 10px; padding: 10px 12px; font-size: 14px; margin: 12px 0; }
+  .bar { height: 10px; background: var(--line); border-radius: 999px; overflow: hidden; margin: 6px 0 2px; }
+  .bar > div { height: 100%; background: var(--accent); }
+  .meal { border-top: 1px solid var(--line); padding: 10px 0; }
+  .meal:first-of-type { border-top: 0; padding-top: 0; }
+  .meal .when { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+  .meal .name { font-weight: 600; margin: 2px 0; }
+  .meal .how { font-size: 14px; color: var(--muted); }
+  .check { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-top: 1px solid var(--line); }
+  .check:first-of-type { border-top: 0; }
+  .check input { width: 22px; height: 22px; flex-shrink: 0; accent-color: var(--accent); }
+  .check.done span.label { text-decoration: line-through; color: var(--muted); }
+  .check .qty { margin-left: auto; color: var(--muted); font-size: 14px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .seg { display: flex; background: var(--line); border-radius: 10px; padding: 3px; gap: 3px; margin-top: 12px; }
+  .seg button { flex: 1; background: none; padding: 8px; font-size: 14px; }
+  .seg button.active { background: var(--card); font-weight: 600; }
+  nav { position: fixed; bottom: 0; left: 0; right: 0; display: flex; background: var(--card);
+        border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom); z-index: 5; }
+  nav button { flex: 1; background: none; border-radius: 0; padding: 10px 2px 12px; color: var(--muted); font-size: 12px; }
+  nav button .ico { display: block; font-size: 20px; line-height: 1.2; }
+  nav button.active { color: var(--accent); font-weight: 700; box-shadow: inset 0 3px 0 var(--accent); }
+  .toast { position: fixed; left: 50%; top: calc(12px + env(safe-area-inset-top)); transform: translateX(-50%); background: var(--text); color: var(--bg);
+           padding: 10px 16px; border-radius: 999px; font-size: 14px; opacity: 0; transition: opacity .2s; pointer-events: none; z-index: 10; max-width: 90vw; }
+  .toast.show { opacity: 1; }
+  .hidden { display: none !important; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  td, th { text-align: left; padding: 6px 4px; border-top: 1px solid var(--line); }
+  th { color: var(--muted); font-weight: 500; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  #account { font-size: 13px; }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Health plan</h1>
+    <div class="sub" id="subtitle">Meals · shopping · progress</div>
+  </div>
+  <div id="account"></div>
+</header>
+
+<main>
+  <div class="note hidden" id="installHint"></div>
+
+  <!-- MEALS -->
+  <section id="tab-meals">
+    <div class="card">
+      <div class="datebar">
+        <button id="mealPrev" aria-label="Previous day">‹</button>
+        <div class="mid"><b id="mealDay"></b><div class="muted" id="mealSub"></div></div>
+        <button id="mealNext" aria-label="Next day">›</button>
+      </div>
+    </div>
+    <div class="note hidden" id="mealPrep"></div>
+    <div class="card" id="mealList"></div>
+    <div class="card"><h2>Today's rules</h2><div id="mealRules" class="muted"></div></div>
+  </section>
+
+  <!-- SHOP -->
+  <section id="tab-shop" class="hidden">
+    <div class="card">
+      <div class="datebar">
+        <button id="shopPrev" aria-label="Previous week">‹</button>
+        <div class="mid"><b id="shopWeek"></b><div class="muted" id="shopDates"></div></div>
+        <button id="shopNext" aria-label="Next week">›</button>
+      </div>
+      <div class="seg" id="shopSeg">
+        <button data-view="list" class="active">Shopping list</button>
+        <button data-view="pantry">Keep at home</button>
+      </div>
+    </div>
+    <div id="shopList"></div>
+    <div id="pantryList" class="hidden"></div>
+  </section>
+
+  <!-- LOG -->
+  <section id="tab-log" class="hidden">
+    <div class="needs-auth"></div>
+    <div class="authed">
+      <div class="card">
+        <div class="datebar">
+          <button id="prevDay" aria-label="Previous day">‹</button>
+          <input type="date" id="date">
+          <button id="nextDay" aria-label="Next day">›</button>
+        </div>
+        <div class="muted" id="dayInfo" style="margin-top:8px">&nbsp;</div>
+      </div>
+      <div class="card">
+        <h2>Today</h2>
+        <div class="grid" id="fields"></div>
+      </div>
+      <div class="card"><h2>Rules</h2><div id="rules"></div></div>
+      <div class="card"><label for="notes" id="notesLabel">Notes</label><textarea id="notes"></textarea></div>
+      <button class="primary" id="saveDay">Save day</button>
+    </div>
+  </section>
+
+  <!-- TRAIN -->
+  <section id="tab-train" class="hidden">
+    <div class="needs-auth"></div>
+    <div class="authed">
+      <div class="card">
+        <div class="datebar">
+          <button id="prevWeekW">‹</button>
+          <div class="mid"><b id="weekLabelW">Week</b><div class="muted" id="weekDatesW"></div></div>
+          <button id="nextWeekW">›</button>
+        </div>
+      </div>
+      <div id="sessions"></div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section id="tab-stats" class="hidden">
+    <div class="needs-auth"></div>
+    <div class="authed">
+      <div class="card">
+        <h2>Progress to goal</h2>
+        <div class="bar"><div id="progressBar" style="width:0"></div></div>
+        <div class="muted" id="progressText"></div>
+      </div>
+      <div class="card"><div id="dashStats"></div></div>
+      <div class="card">
+        <h2>Milestones</h2>
+        <table><thead><tr><th>When</th><th class="num">Target</th><th class="num">Actual</th></tr></thead><tbody id="milestones"></tbody></table>
+      </div>
+      <div class="card">
+        <div class="datebar">
+          <button id="prevWeekR">‹</button>
+          <div class="mid"><b id="weekLabelR">Week</b><div class="muted" id="weekDatesR"></div></div>
+          <button id="nextWeekR">›</button>
+        </div>
+      </div>
+      <div class="card"><h2>Week in numbers</h2><div id="weekStats"></div></div>
+      <div class="card">
+        <h2>Sunday review</h2>
+        <label for="waist" id="waistLabel">Waist (cm)</label><input id="waist" type="number" inputmode="decimal" step="0.5">
+        <div style="height:10px"></div>
+        <label for="win">Win of the week</label><textarea id="win"></textarea>
+        <div style="height:10px"></div>
+        <label for="fix">Fix for next week</label><textarea id="fix"></textarea>
+      </div>
+      <button class="primary" id="saveReview">Save review</button>
+      <div class="card"><a id="sheetLink" target="_blank" rel="noopener">Open the Google Sheet</a></div>
+    </div>
+  </section>
+</main>
+
+<nav>
+  <button data-tab="meals" class="active"><span class="ico">🍽</span>Meals</button>
+  <button data-tab="shop"><span class="ico">🛒</span>Shop</button>
+  <button data-tab="log"><span class="ico">✏️</span>Log</button>
+  <button data-tab="train"><span class="ico">🥊</span>Train</button>
+  <button data-tab="stats"><span class="ico">📈</span>Stats</button>
+</nav>
+<div class="toast" id="toast"></div>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer onload="window.onGisLoad && window.onGisLoad()"></script>
+</body>
+</html>

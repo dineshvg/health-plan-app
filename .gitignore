@@ -1,0 +1,3 @@
+tracker/*.xlsx
+client_secret*.json
+.DS_Store
