@@ -4,7 +4,7 @@
 
 ![Health plan app: meals, shopping list and logging](media/banner.png)
 
-**[Try the demo](https://dineshvg.github.io/health-plan-app/)** (example plan, made-up person) · **[Download the skill](https://github.com/dineshvg/health-plan-app/raw/main/skill/health-plan-to-app.zip)**
+**[Try the demo](https://dineshvg.github.io/health-plan-app/)** (example plan, made-up person) · **[Download the skill](https://github.com/dineshvg/health-plan-app/raw/main/skill/health-plan-to-app.zip)** · **[Read the story behind it](https://medium.com/@dineshvg.1023/i-asked-an-ai-agent-for-a-health-plan-it-built-me-an-app-0fef893d8da4)**
 
 A plan you can carry in your pocket: an installable phone app (PWA) that tells you **what to eat today**, builds **this week's shopping list**, keeps a **"keep at home"** pantry list, and lets you **log weight, habits, workouts and a Sunday review** straight into your own Google Sheet.
 
