@@ -1,9 +1,9 @@
 """Build the tracker workbook (.xlsx) from your PRIVATE tracker settings.
 
     pip install openpyxl
-    cp tracker/settings.example.json tracker/settings.json   # git-ignored; fill in your numbers
-    python tracker/build_tracker.py                           # writes tracker/tracker.xlsx
-    python tracker/build_tracker.py path/to/settings.json out.xlsx
+    cp tracker/settings.example.json ../my-plans/settings.json   # private copy; fill in your numbers
+    python3 tracker/build_tracker.py ../my-plans/settings.json  # writes tracker/tracker.xlsx
+    python3 tracker/build_tracker.py                            # tracker/settings.json, else the example
 
 Settings hold weights, goal, milestones and habits, so they never go into the public app/.
 

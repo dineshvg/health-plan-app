@@ -25,7 +25,7 @@ A plan you can carry in your pocket: an installable phone app (PWA) that tells y
 
 1. **Copy the repo**: "Use this template" → new **public** repo (free GitHub Pages needs public).
 2. **Write your plan** in `app/plan.json` (or let an agent do it with the skill). Schema below.
-3. **Build the tracker**: `cp tracker/settings.example.json tracker/settings.json`, fill in your numbers (this file stays local, never commit it), then `pip install openpyxl && python tracker/build_tracker.py` → upload `tracker/tracker.xlsx` to Google Drive → open with Google Sheets → File → Save as Google Sheets. Share it (Editor) with every Google account that should log. Copy its ID from the URL into `SHEET_ID` in `app/config.js`.
+3. **Build the tracker**: copy `tracker/settings.example.json` into your **private** plans repo (or to `tracker/settings.json` here, which is git-ignored) and fill in your numbers. Keep exactly one copy. Then `pip install openpyxl && python3 tracker/build_tracker.py path/to/settings.json` → upload `tracker/tracker.xlsx` to Google Drive → open with Google Sheets → File → Save as Google Sheets. Share it (Editor) with every Google account that should log. Copy its ID from the URL into `SHEET_ID` in `app/config.js`.
 4. **Google sign-in** (once):
    1. [console.cloud.google.com](https://console.cloud.google.com) → new project.
    2. APIs & Services → Library → enable **Google Sheets API**.
@@ -35,7 +35,7 @@ A plan you can carry in your pocket: an installable phone app (PWA) that tells y
 5. **Publish**: repo Settings → Pages → Source: **GitHub Actions**. Push to `main`; the app appears at `https://<your-user>.github.io/<repo>/`.
 6. **Install** on your phone: Android Chrome ⋮ → Install app; iPhone Safari Share → Add to Home Screen.
 
-After changing anything in `app/`, run `npm install && npm test` (set `CHROMIUM_PATH` to use an existing Chromium), and bump `VERSION` in `app/sw.js` so phones pick up the new version.
+After changing anything in `app/`, run `npm install && npm test` (basic plan checks + phone-size browser test; set `CHROMIUM_PATH` to use an existing Chromium) and the full plan check `python3 tests/validate_plan.py --exclude <diet words> --private path/to/settings.json`, and bump `VERSION` in `app/sw.js` so phones pick up the new version.
 
 ## `plan.json` schema
 
@@ -46,6 +46,7 @@ After changing anything in `app/`, run `npm install && npm test` (set `CHROMIUM_
   "target": { "kcal": 2000, "protein": 140 },
   "sessionsPerWeek": 3,
   "shopNote": "Round up to pack sizes ...",   // optional line on the shopping list (local shops, units)
+  "restDayNote": "Rest day: walk 7–10k steps", // optional, shown on days without "training"
   "categories": { "protein": "Meat, fish & eggs", "dairy": "Dairy", ... },   // shopping aisles, in order; keys and labels are yours (e.g. "Eggs, tofu & soy")
   "rules": ["Protein at every meal", ...],                                     // shown under each day's meals
   "meals": {
@@ -53,6 +54,8 @@ After changing anything in `app/`, run `npm install && npm test` (set `CHROMIUM_
       "name": "Chili con carne + rice", "kcal": 600, "protein": 42,
       "how": "Brown 300 g mince ...",
       "portions": 2,                      // optional: cook more than one portion
+      "freezes": true,                    // optional: leftovers can come from the freezer
+      "note": "Tonight is the flexible meal", // optional: shown under the day's rules when this meal is on the menu
       "buy": [{ "name": "Kidney beans", "qty": 1, "unit": "can", "cat": "tins" }]  // per time it is cooked
     }
   },
@@ -66,8 +69,8 @@ After changing anything in `app/`, run `npm install && npm test` (set `CHROMIUM_
 
 - `"@curry"` means "leftovers of curry": shown with the recipe, nothing added to the shopping list. On the plan's very first day (`startDate`) there are no leftovers yet, so the app shows it as cooked fresh and puts its ingredients on week 1's list.
 - Shopping quantities are the sum of every `buy` item in that week's cooked meals (Monday to Sunday). Pantry items marked "low" are added, or flagged if already on the list.
-- Kcal/protein per day include leftovers. `python tests/validate_plan.py --exclude pork,ham` checks totals, meal keys, categories and excluded ingredients.
+- Kcal/protein per day include leftovers. `python3 tests/validate_plan.py --exclude pork,ham` checks totals, meal keys, categories, and excluded words anywhere in the plan (meals, prep notes, rules, categories, notes).
 
 ## Privacy
 
-Keep personal details (weights, goals, conditions, habits) out of this repo: it is public, and GitHub Pages publishes everything in `app/`. They belong in `tracker/settings.json` (git-ignored) and your private sheet. Every label in the Log, Train and Stats tabs is read from the sheet's header rows, so the app code stays generic. `python tests/validate_plan.py --private tracker/settings.json` fails if a private value leaked into `plan.json`. Never commit `client_secret*.json`.
+Keep personal details (weights, goals, conditions, habits) out of this repo: it is public, and GitHub Pages publishes everything in `app/`. They belong in `tracker/settings.json` (git-ignored) and your private sheet. Every label in the Log, Train and Stats tabs is read from the sheet's header rows, so the app code stays generic. `python3 tests/validate_plan.py --private path/to/settings.json` fails if a private value leaked into `plan.json`: `privateWords` (name, city, conditions, job…), the habit labels, goal and milestone dates, and weights written as "78 kg". It also checks that training days match the tracker's sessions. `rules` in `plan.json` are public: keep them to generic eating rules. Never commit `client_secret*.json`.

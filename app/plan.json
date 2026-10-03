@@ -7,6 +7,7 @@
  },
  "sessionsPerWeek": 3,
  "shopNote": "Quantities are for the planned portions: round up to pack sizes. Items marked \"low\" come from Keep at home.",
+ "restDayNote": "Rest day: walk 7–10k steps",
  "categories": {
   "protein": "Meat, fish & eggs",
   "dairy": "Dairy",
@@ -547,7 +548,8 @@
    "kcal": 800,
    "protein": 35,
    "how": "Pizza night or eating out. Enjoy it, one plate, no \"cheat day\".",
-   "buy": []
+   "buy": [],
+   "note": "Tonight is the flexible meal. One plate, then the kitchen is closed."
   }
  },
  "weeks": [

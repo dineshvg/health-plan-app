@@ -54,7 +54,7 @@
     const t = templateFor(iso);
     const w = appWeekIndex(iso) + 1;
     $('mealDay').textContent = (iso === todayIso() ? 'Today · ' : '') + DAY_NAMES[weekdayIdx(iso)] + ' ' + fmtDate(iso);
-    $('mealSub').textContent = (w >= 1 ? 'Week ' + w : 'Before week 1') + (t.training ? ' · Training day ' + t.training : ' · Rest day: walk 7–10k steps');
+    $('mealSub').textContent = (w >= 1 ? 'Week ' + w : 'Before week 1') + (t.training ? ' · Training day ' + t.training : (MEALS.REST_NOTE ? ' · ' + MEALS.REST_NOTE : ' · Rest day'));
     const slots = [['Breakfast', t.b], ['Lunch', t.l], ['Snack', t.s], ['Dinner', t.d]].map(([when, x]) => [when, resolve(x, iso)]);
     const kcal = slots.reduce((a, [, m]) => a + m.kcal, 0);
     const protein = slots.reduce((a, [, m]) => a + m.protein, 0);
@@ -63,7 +63,7 @@
     html += slots.map(([when, m]) => `<div class="meal">
         <div class="row between"><span class="when">${when}</span><span class="muted">${m.kcal} kcal · ${m.protein} g</span></div>
         <div class="name">${esc(m.name)}</div>
-        <div class="how">${esc(m.leftover ? 'From yesterday\'s pot. Reheat 1 portion, add a big handful of veg.' : m.how)}</div>
+        <div class="how">${esc(m.leftover ? 'Leftovers: reheat one portion you cooked earlier' + (m.freezes ? ' (or take one from the freezer)' : '') + '.' : m.how)}</div>
         ${m.firstDay ? '<div class="muted" style="margin-top:4px">First day: no leftovers yet, cook this one fresh.</div>' : ''}
         ${m.portions > 1 && !m.leftover ? `<div class="muted" style="margin-top:4px">Cook ${m.portions} portions: the rest is for later meals.</div>` : ''}
       </div>`).join('');
@@ -76,7 +76,7 @@
     $('mealPrep').classList.toggle('hidden', !t.prep);
     $('mealPrep').textContent = t.prep || '';
     $('mealRules').innerHTML = MEALS.RULES.map(r => '• ' + esc(r)).join('<br>') +
-      (t.d === 'flexible' ? '<br>• Tonight is the flexible meal. One plate, then kitchen closed.' : '');
+      [t.b, t.l, t.s, t.d].map(x => resolve(x, iso)).filter(m => m.note && !m.leftover).map(m => '<br>• ' + esc(m.note)).join('');
   }
 
   /* ---------- shopping ---------- */
@@ -442,7 +442,7 @@
   async function loadPlan() {
     const p = await (await fetch('plan.json', { cache: 'no-cache' })).json();
     MEALS = { M: p.meals, WEEKS: p.weeks, PANTRY: p.pantry.map(i => [i.name, i.cat]), RULES: p.rules || [], CATS: p.categories, TARGET: p.target, SESSIONS: p.sessionsPerWeek,
-      SHOP_NOTE: p.shopNote || 'Quantities are for the planned portions: round up to pack sizes. Items marked "low" come from Keep at home.' };
+      REST_NOTE: p.restDayNote || '', SHOP_NOTE: p.shopNote || 'Quantities are for the planned portions: round up to pack sizes. Items marked "low" come from Keep at home.' };
     state.start = p.startDate;
     document.title = p.name || document.title;
     document.querySelector('header h1').textContent = p.name || 'Health plan';

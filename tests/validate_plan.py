@@ -1,10 +1,11 @@
 """Check app/plan.json before publishing.
 
-    python tests/validate_plan.py                       # uses app/plan.json
-    python tests/validate_plan.py app/plan.json --exclude chicken,beef,salmon --private tracker/settings.json
+    python3 tests/validate_plan.py                       # uses app/plan.json
+    python3 tests/validate_plan.py app/plan.json --exclude chicken,beef,peanut --private ../my-plans/tracker/settings.json
 
 Fails (exit 1) on: missing meal keys, days outside +/-10 % of the kcal target, days under 90 % of the
-protein target, excluded ingredients, or personal data that belongs in the private settings.
+protein target, unknown categories, excluded words anywhere in the plan, private values from the settings
+anywhere in the plan, or training days that don't match the tracker's sessions.
 """
 import argparse
 import json
@@ -15,30 +16,46 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 ap = argparse.ArgumentParser()
 ap.add_argument("plan", nargs="?", default=str(ROOT / "app" / "plan.json"))
-ap.add_argument("--exclude", default="", help="comma-separated words that must not appear in meals (diet/allergies)")
-ap.add_argument("--private", help="private settings JSON; none of its personal values may appear in plan.json")
+ap.add_argument("--exclude", default="", help="comma-separated words that must not appear anywhere in the plan (diet, allergies)")
+ap.add_argument("--private", help="private tracker settings JSON; none of its personal values may appear in plan.json")
 a = ap.parse_args()
 
-text = Path(a.plan).read_text()
-p = json.loads(text)
-errors, notes = [], []
+p = json.loads(Path(a.plan).read_text())
+errors = []
+
+
+def strings(x):
+    """Every string value in the plan (keys excluded), lower-cased."""
+    if isinstance(x, str):
+        yield x.lower()
+    elif isinstance(x, dict):
+        for v in x.values():
+            yield from strings(v)
+    elif isinstance(x, list):
+        for v in x:
+            yield from strings(v)
+
+
+ALL = list(strings(p))
+TEXT = "\n".join(ALL)
 
 for key in ("tracker", "person"):
     if key in p:
         errors.append(f'plan.json has a "{key}" section: personal settings belong in the private tracker settings')
 
+# meal references and daily totals
 M = p["meals"]
+days = []
 for wi, week in enumerate(p["weeks"], 1):
     if len(week) != 7:
         errors.append(f"week {wi} has {len(week)} days, needs 7 (Mon..Sun)")
     for di, day in enumerate(week):
-        for slot in "blsd":
-            ref = day.get(slot)
-            if not ref or ref.lstrip("@") not in M:
-                errors.append(f"week {wi} day {di + 1} {slot}: unknown meal {ref!r}")
+        bad = [s for s in "blsd" if not day.get(s) or day[s].lstrip("@") not in M]
+        for s in bad:
+            errors.append(f"week {wi} day {di + 1} {s}: unknown meal {day.get(s)!r}")
         if day.get("batch") and day["batch"] not in M:
             errors.append(f"week {wi} day {di + 1}: unknown batch meal {day['batch']!r}")
-        if errors:
+        if bad:
             continue
         kcal = sum(M[day[s].lstrip("@")]["kcal"] for s in "blsd")
         prot = sum(M[day[s].lstrip("@")]["protein"] for s in "blsd")
@@ -47,7 +64,7 @@ for wi, week in enumerate(p["weeks"], 1):
             errors.append(f"week {wi} day {di + 1}: {kcal} kcal is outside +/-10 % of {tk}")
         if prot < 0.9 * tp:
             errors.append(f"week {wi} day {di + 1}: {prot} g protein is under 90 % of {tp}")
-        notes.append((kcal, prot))
+        days.append((kcal, prot))
 
 cats = set(p["categories"])
 for k, m in M.items():
@@ -58,29 +75,41 @@ for it in p["pantry"]:
     if it["cat"] not in cats:
         errors.append(f"pantry {it['name']!r} has unknown category {it['cat']!r}")
 
-for word in filter(None, (w.strip().lower() for w in a.exclude.split(","))):
-    for k, m in M.items():
-        blob = (m["name"] + " " + m["how"] + " " + " ".join(i["name"] for i in m.get("buy", []))).lower()
-        if re.search(r"\b" + re.escape(word), blob):
-            errors.append(f"meal {k} mentions excluded {word!r}")
-    for it in p["pantry"]:
-        if re.search(r"\b" + re.escape(word), it["name"].lower()):
-            errors.append(f"pantry item {it['name']!r} mentions excluded {word!r}")
+
+def find(word):
+    """Lines of the plan containing word (word start, case-insensitive)."""
+    rx = re.compile(r"(?<![a-z])" + re.escape(word.lower()))
+    return [s for s in ALL if rx.search(s)]
+
+
+for word in filter(None, (w.strip() for w in a.exclude.split(","))):
+    for hit in find(word)[:3]:
+        errors.append(f"excluded {word!r} found in: {hit[:80]!r}")
 
 if a.private:
     s = json.loads(Path(a.private).read_text())
-    personal = [s.get("goalDate"), s.get("habit", {}).get("label")] + [m[0] for m in s.get("milestones", [])]
-    for v in filter(None, personal):
-        if str(v).lower() in text.lower():
-            errors.append(f"plan.json contains a private value: {v!r}")
-    for num in (s.get("startWeight"), s.get("goalWeight")):
-        if num is not None and re.search(rf'"(weight|startWeight|goalWeight)"\s*:\s*{num}\b', text):
-            errors.append(f"plan.json contains a weight from the private settings: {num}")
+    h = s.get("habit", {})
+    words = list(s.get("privateWords", [])) + [h.get("label"), h.get("weekly"), h.get("freeDays")]
+    if s.get("name") and s["name"].lower() != p.get("name", "").lower():
+        words.append(s["name"])
+    words += [s.get("goalDate")] + [m[1] for m in s.get("milestones", [])]  # dates
+    for v in filter(None, words):
+        for hit in find(str(v))[:2]:
+            errors.append(f"private value {v!r} found in plan.json: {hit[:80]!r}")
+    for num in sorted({float(x) for x in [s.get("startWeight"), s.get("goalWeight")] + [m[2] for m in s.get("milestones", [])] if x}):
+        n = re.escape(f"{num:g}")
+        if re.search(rf"(?<![\d.]){n}(\.0)?\s*(kg|kilo)", TEXT):
+            errors.append(f"weight {num:g} kg from the private settings appears in plan.json")
+    # training days in the plan vs the tracker's sessions
+    plan_days = sorted({(d.get("training"), i) for w in p["weeks"] for i, d in enumerate(w) if d.get("training")})
+    sess_days = sorted({(x["code"], x["dayOffset"]) for x in s.get("sessions", [])})
+    if plan_days and sess_days and set(plan_days) != set(sess_days):
+        errors.append(f"training days in plan.json {plan_days} don't match tracker sessions {sess_days} (code, weekday 0=Mon)")
 
-if notes:
-    ks = [k for k, _ in notes]
-    ps = [q for _, q in notes]
-    print(f"{len(notes)} days: {min(ks)}-{max(ks)} kcal (avg {sum(ks) // len(ks)}), {min(ps)}-{max(ps)} g protein")
+if days:
+    ks = [k for k, _ in days]
+    ps = [q for _, q in days]
+    print(f"{len(days)} days: {min(ks)}-{max(ks)} kcal (avg {sum(ks) // len(ks)}), {min(ps)}-{max(ps)} g protein")
 for e in errors:
     print("FAIL", e)
 print("OK" if not errors else f"{len(errors)} problem(s)")
