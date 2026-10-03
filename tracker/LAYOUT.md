@@ -11,8 +11,8 @@ Rename headers freely (that is how you make it yours), but keep columns and rows
 | Daily Log | row 1 headers, rows 2–365 = one row per day from B2 | Log tab. Writes D, F–Q, S. Never writes E (7-day avg) or R (rules %), which are formulas |
 | Daily Log | D weight · F steps · G habit to cut (count) · H sleep h · I sleep quality 1–5 · J–O six Y/N rules · P drinks · Q water L · S notes | Field labels = row-1 headers |
 | Workouts | A week · B date · C phase · D session · E focus | Train tab lists rows whose A = selected week |
-| Workouts | F done Y/N · G minutes · H RPE · I key lift · J rounds · K notes | Written by the Train tab |
+| Workouts | F done Y/N · G–K five free fields (default: minutes, RPE, key lift, rounds/laps, notes) | Written by the Train tab; G–K labels = row-1 headers |
 | Weekly Review | row = week + 1; D–M formulas, row-1 headers as labels | Stats "week in numbers" |
 | Weekly Review | F waist · N win · O fix | Written by the Sunday review |
 
-`build_tracker.py` creates exactly this layout from the `tracker` section of `app/plan.json`.
+`build_tracker.py` creates exactly this layout from your private `tracker/settings.json` (start from `settings.example.json`).

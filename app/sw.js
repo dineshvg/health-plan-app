@@ -1,5 +1,5 @@
 // Offline cache for the app shell. Google API calls always go to the network.
-const VERSION = 'health-plan-v1';
+const VERSION = 'health-plan-v2';
 const SHELL = ['./', 'index.html', 'app.js', 'plan.json', 'config.js', 'manifest.webmanifest', 'icon.svg', 'icon-180.png', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', e => {

@@ -1,0 +1,64 @@
+{
+  "_comment": "PRIVATE: copy to tracker/settings.json (git-ignored) and fill in. Never commit real values to a public repo.",
+  "name": "Health plan",
+  "startDate": "2026-10-05",
+  "startWeight": 86,
+  "goalWeight": 78,
+  "goalDate": "2027-04-30",
+  "milestones": [
+    [
+      "End of Dec 2026",
+      "2026-12-31",
+      83.5
+    ],
+    [
+      "End of Feb 2027",
+      "2027-02-28",
+      80.5
+    ],
+    [
+      "Goal",
+      "2027-04-30",
+      78
+    ]
+  ],
+  "habit": {
+    "label": "Sweets/snacks outside the plan",
+    "weekly": "Avg snacks/day",
+    "freeDays": "Snack-free days"
+  },
+  "drinks": "Alcohol drinks",
+  "dailyRules": [
+    "Protein every meal",
+    "Plate rule",
+    "No liquid calories",
+    "Kitchen closed 2-3h before bed",
+    "Coffee before 14:00 only",
+    "No grazing between meals"
+  ],
+  "sessions": [
+    {
+      "dayOffset": 0,
+      "code": "A",
+      "focus": "Lower body strength"
+    },
+    {
+      "dayOffset": 2,
+      "code": "B",
+      "focus": "Upper body + conditioning"
+    },
+    {
+      "dayOffset": 5,
+      "code": "C",
+      "focus": "Full body circuit"
+    }
+  ],
+  "weeks": 12,
+  "tests": [
+    "Body weight (kg)",
+    "Waist (cm)",
+    "Max push-ups",
+    "Plank hold (s)",
+    "Resting heart rate"
+  ]
+}

@@ -34,9 +34,11 @@
 
   /* ---------- meal plan ---------- */
   // "key" = cook that meal, "@key" = eat leftovers of it (nothing to buy).
-  const resolve = x => {
+  // On the plan's first day there are no leftovers yet, so "@key" is cooked fresh that day.
+  const resolve = (x, iso) => {
     if (typeof x !== 'string') return x;
     if (x[0] !== '@') return MEALS.M[x];
+    if (iso && iso === state.start) return { ...MEALS.M[x.slice(1)], firstDay: true };
     const m = MEALS.M[x.slice(1)];
     return { ...m, name: m.name + ' (leftovers)', leftover: true, buy: [] };
   };
@@ -53,7 +55,7 @@
     const w = appWeekIndex(iso) + 1;
     $('mealDay').textContent = (iso === todayIso() ? 'Today · ' : '') + DAY_NAMES[weekdayIdx(iso)] + ' ' + fmtDate(iso);
     $('mealSub').textContent = (w >= 1 ? 'Week ' + w : 'Before week 1') + (t.training ? ' · Training day ' + t.training : ' · Rest day: walk 7–10k steps');
-    const slots = [['Breakfast', t.b], ['Lunch', t.l], ['Snack', t.s], ['Dinner', t.d]].map(([when, x]) => [when, resolve(x)]);
+    const slots = [['Breakfast', t.b], ['Lunch', t.l], ['Snack', t.s], ['Dinner', t.d]].map(([when, x]) => [when, resolve(x, iso)]);
     const kcal = slots.reduce((a, [, m]) => a + m.kcal, 0);
     const protein = slots.reduce((a, [, m]) => a + m.protein, 0);
     let html = `<div class="row between" style="margin-bottom:10px"><h2 style="margin:0">Meals</h2>
@@ -62,6 +64,7 @@
         <div class="row between"><span class="when">${when}</span><span class="muted">${m.kcal} kcal · ${m.protein} g</span></div>
         <div class="name">${esc(m.name)}</div>
         <div class="how">${esc(m.leftover ? 'From yesterday\'s pot. Reheat 1 portion, add a big handful of veg.' : m.how)}</div>
+        ${m.firstDay ? '<div class="muted" style="margin-top:4px">First day: no leftovers yet, cook this one fresh.</div>' : ''}
         ${m.portions > 1 && !m.leftover ? `<div class="muted" style="margin-top:4px">Cook ${m.portions} portions: the rest is for later meals.</div>` : ''}
       </div>`).join('');
     if (t.batch) {
@@ -90,8 +93,9 @@
   function weekItems(mon) {
     const agg = {};
     for (let i = 0; i < 7; i++) {
-      const t = templateFor(shiftIso(mon, i));
-      const meals = [t.b, t.l, t.s, t.d].map(resolve);
+      const day = shiftIso(mon, i);
+      const t = templateFor(day);
+      const meals = [t.b, t.l, t.s, t.d].map(x => resolve(x, day));
       if (t.batch) meals.push(MEALS.M[t.batch]);
       meals.forEach(m => (m.buy || []).forEach(it => {
         const k = it.name + '|' + it.unit;
@@ -114,17 +118,18 @@
       const p = MEALS.PANTRY.find(x => x[0] === n);
       items.push({ name: n, qty: null, unit: '', cat: p ? p[1] : 'other', fromPantry: true });
     });
+    items.forEach(i => { if (low[i.name]) i.low = true; }); // pantry item already needed this week
     const byCat = {};
     items.forEach(i => (byCat[i.cat] = byCat[i.cat] || []).push(i));
     const done = items.filter(i => ticked[i.name]).length;
     let html = `<div class="card"><div class="row between"><b>${done} / ${items.length} in the basket</b>
       <button class="small" id="shopReset">Clear ticks</button></div>
-      <div class="muted" style="margin-top:6px">For one person, Aldi/Lidl/Rewe sizes vary: round up. Items marked "low" come from Keep at home.</div></div>`;
+      <div class="muted" style="margin-top:6px">${esc(MEALS.SHOP_NOTE)}</div></div>`;
     Object.keys(MEALS.CATS).filter(c => byCat[c]).forEach(c => {
       html += `<div class="card"><h2>${MEALS.CATS[c]}</h2>` + byCat[c].sort((a, b) => a.name.localeCompare(b.name)).map(i =>
         `<label class="check ${ticked[i.name] ? 'done' : ''}"><input type="checkbox" data-item="${esc(i.name)}" ${ticked[i.name] ? 'checked' : ''}>
           <span class="label">${esc(i.name)}</span>
-          <span class="qty">${i.fromPantry ? '<span class="pill warn">low</span>' : roundQty(i.qty, i.unit)}</span></label>`).join('') + '</div>';
+          <span class="qty">${i.fromPantry ? '<span class="pill warn">low</span>' : roundQty(i.qty, i.unit) + (i.low ? ' <span class="pill warn">low</span>' : '')}</span></label>`).join('') + '</div>';
     });
     $('shopList').innerHTML = html;
     $('shopReset').onclick = () => { store.set(key, {}); renderShop(); };
@@ -299,7 +304,8 @@
   async function loadTrain() {
     const n = state.week; weekHeader(n);
     try {
-      const [rows] = await getRanges(['Workouts!A2:K200']);
+      const [head, rows] = await getRanges(['Workouts!A1:K1', 'Workouts!A2:K200']);
+      const lab = i => esc(cell(head, 0, i));
       const sessions = rows.map((r, i) => ({ row: i + 2, r })).filter(x => Number(x.r[0]) === n);
       $('sessions').innerHTML = sessions.length ? sessions.map(({ row, r }) => {
         const v = i => esc(blank(r[i]) ? '' : r[i]);
@@ -311,12 +317,12 @@
           <div class="yn"><span>Done?</span><span class="btns">
             <button data-done="Y" class="${done === 'Y' ? 'on-Y' : ''}">Y</button><button data-done="N" class="${done === 'N' ? 'on-N' : ''}">N</button></span></div>
           <div class="grid" style="margin-top:8px">
-            <div><label>Duration (min)</label><input data-f="6" type="number" inputmode="numeric" value="${v(6)}"></div>
-            <div><label>Hardest RPE</label><input data-f="7" type="number" inputmode="decimal" step="0.5" value="${v(7)}"></div>
-            <div><label>Key lift + weight</label><input data-f="8" value="${v(8)}"></div>
-            <div><label>Boxing rounds</label><input data-f="9" type="number" inputmode="numeric" value="${v(9)}"></div>
+            <div><label>${lab(6)}</label><input data-f="6" type="number" inputmode="numeric" value="${v(6)}"></div>
+            <div><label>${lab(7)}</label><input data-f="7" type="number" inputmode="decimal" step="0.5" value="${v(7)}"></div>
+            <div><label>${lab(8)}</label><input data-f="8" value="${v(8)}"></div>
+            <div><label>${lab(9)}</label><input data-f="9" type="number" inputmode="numeric" value="${v(9)}"></div>
           </div>
-          <div style="margin-top:10px"><label>Notes</label><input data-f="10" value="${v(10)}"></div>
+          <div style="margin-top:10px"><label>${lab(10)}</label><input data-f="10" value="${v(10)}"></div>
           <div style="margin-top:10px"><button class="primary" data-save>Save session</button></div></div>`;
       }).join('') : '<div class="card muted">No sessions planned for this week yet. Weeks 13+ come with the next training block.</div>';
     } catch (err) { fail(err); }
@@ -435,7 +441,8 @@
   /* ---------- init ---------- */
   async function loadPlan() {
     const p = await (await fetch('plan.json', { cache: 'no-cache' })).json();
-    MEALS = { M: p.meals, WEEKS: p.weeks, PANTRY: p.pantry.map(i => [i.name, i.cat]), RULES: p.rules || [], CATS: p.categories, TARGET: p.target, SESSIONS: p.sessionsPerWeek };
+    MEALS = { M: p.meals, WEEKS: p.weeks, PANTRY: p.pantry.map(i => [i.name, i.cat]), RULES: p.rules || [], CATS: p.categories, TARGET: p.target, SESSIONS: p.sessionsPerWeek,
+      SHOP_NOTE: p.shopNote || 'Quantities are for the planned portions: round up to pack sizes. Items marked "low" come from Keep at home.' };
     state.start = p.startDate;
     document.title = p.name || document.title;
     document.querySelector('header h1').textContent = p.name || 'Health plan';

@@ -1,3 +1,5 @@
 tracker/*.xlsx
 client_secret*.json
 .DS_Store
+tracker/settings.json
+node_modules

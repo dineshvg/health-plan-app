@@ -13,9 +13,11 @@ A plan you can carry in your pocket: an installable phone app (PWA) that tells y
 | Path | What |
 |---|---|
 | `app/` | The PWA: `index.html`, `app.js`, `sw.js`, `manifest.webmanifest`, icons |
-| `app/plan.json` | **Your plan**: meals, a rotating set of weeks, rules, pantry, shopping categories, tracker settings. The example is a made-up person |
+| `app/plan.json` | **Your plan** (public): meals, a rotating set of weeks, rules, pantry, shopping categories. No personal data |
 | `app/config.js` | Your Google OAuth client ID and sheet ID |
-| `tracker/build_tracker.py` | Builds the 5-tab tracker (.xlsx) from `plan.json` |
+| `tracker/settings.example.json` | Tracker settings: weights, goal, milestones, habit, rules, sessions. Copy to `tracker/settings.json` (git-ignored) |
+| `tracker/build_tracker.py` | Builds the 5-tab tracker (.xlsx) from your private settings |
+| `tests/` | `validate_plan.py` (plan checks + privacy) and `smoke.js` (phone-size browser test with Google mocked); `npm test` runs both |
 | `tracker/LAYOUT.md` | Which cells the app reads and writes |
 | `skill/SKILL.md` | Agent skill: interview → plans → `plan.json` → sheet → deployed app |
 
@@ -23,7 +25,7 @@ A plan you can carry in your pocket: an installable phone app (PWA) that tells y
 
 1. **Copy the repo**: "Use this template" → new **public** repo (free GitHub Pages needs public).
 2. **Write your plan** in `app/plan.json` (or let an agent do it with the skill). Schema below.
-3. **Build the tracker**: `pip install openpyxl && python tracker/build_tracker.py` → upload `tracker/tracker.xlsx` to Google Drive → open with Google Sheets → File → Save as Google Sheets. Share it (Editor) with every Google account that should log. Copy its ID from the URL into `SHEET_ID` in `app/config.js`.
+3. **Build the tracker**: `cp tracker/settings.example.json tracker/settings.json`, fill in your numbers (this file stays local, never commit it), then `pip install openpyxl && python tracker/build_tracker.py` → upload `tracker/tracker.xlsx` to Google Drive → open with Google Sheets → File → Save as Google Sheets. Share it (Editor) with every Google account that should log. Copy its ID from the URL into `SHEET_ID` in `app/config.js`.
 4. **Google sign-in** (once):
    1. [console.cloud.google.com](https://console.cloud.google.com) → new project.
    2. APIs & Services → Library → enable **Google Sheets API**.
@@ -33,7 +35,7 @@ A plan you can carry in your pocket: an installable phone app (PWA) that tells y
 5. **Publish**: repo Settings → Pages → Source: **GitHub Actions**. Push to `main`; the app appears at `https://<your-user>.github.io/<repo>/`.
 6. **Install** on your phone: Android Chrome ⋮ → Install app; iPhone Safari Share → Add to Home Screen.
 
-After changing anything in `app/`, bump `VERSION` in `app/sw.js` so phones pick up the new version.
+After changing anything in `app/`, run `npm install && npm test` (set `CHROMIUM_PATH` to use an existing Chromium), and bump `VERSION` in `app/sw.js` so phones pick up the new version.
 
 ## `plan.json` schema
 
@@ -43,7 +45,8 @@ After changing anything in `app/`, bump `VERSION` in `app/sw.js` so phones pick 
   "startDate": "2026-10-05",             // a Monday; week 1 of the plan (the sheet's Dashboard!B2 wins once signed in)
   "target": { "kcal": 2000, "protein": 140 },
   "sessionsPerWeek": 3,
-  "categories": { "protein": "Meat, fish & eggs", "dairy": "Dairy", ... },   // shopping list aisles, in order
+  "shopNote": "Round up to pack sizes ...",   // optional line on the shopping list (local shops, units)
+  "categories": { "protein": "Meat, fish & eggs", "dairy": "Dairy", ... },   // shopping aisles, in order; keys and labels are yours (e.g. "Eggs, tofu & soy")
   "rules": ["Protein at every meal", ...],                                     // shown under each day's meals
   "meals": {
     "chili": {
@@ -57,13 +60,14 @@ After changing anything in `app/`, bump `VERSION` in `app/sw.js` so phones pick 
     [ { "training": "A", "b": "oatsSkyr", "l": "@curry", "s": "skyrFruit", "d": "chili",
         "prep": "optional note for the day", "batch": "optional meal key cooked extra that day" }, ... ]
   ],
-  "pantry": [{ "name": "Oats", "cat": "carbs" }],   // "keep at home"; ticking "low" adds it to the shopping list
-  "tracker": { ... }                       // used only by build_tracker.py, see the example
+  "pantry": [{ "name": "Oats", "cat": "carbs" }]    // "keep at home"; ticking "low" adds it to the shopping list
 }
 ```
 
-`"@curry"` means "leftovers of curry": shown with the recipe, nothing added to the shopping list. Shopping quantities are the sum of every `buy` item in that week's cooked meals.
+- `"@curry"` means "leftovers of curry": shown with the recipe, nothing added to the shopping list. On the plan's very first day (`startDate`) there are no leftovers yet, so the app shows it as cooked fresh and puts its ingredients on week 1's list.
+- Shopping quantities are the sum of every `buy` item in that week's cooked meals (Monday to Sunday). Pantry items marked "low" are added, or flagged if already on the list.
+- Kcal/protein per day include leftovers. `python tests/validate_plan.py --exclude pork,ham` checks totals, meal keys, categories and excluded ingredients.
 
 ## Privacy
 
-Keep personal details (weights, conditions, habits) out of this repo: it is public. Labels for logging come from your private sheet's header rows, so the app code stays generic. Never commit `client_secret*.json`.
+Keep personal details (weights, goals, conditions, habits) out of this repo: it is public, and GitHub Pages publishes everything in `app/`. They belong in `tracker/settings.json` (git-ignored) and your private sheet. Every label in the Log, Train and Stats tabs is read from the sheet's header rows, so the app code stays generic. `python tests/validate_plan.py --private tracker/settings.json` fails if a private value leaked into `plan.json`. Never commit `client_secret*.json`.

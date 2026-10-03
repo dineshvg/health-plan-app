@@ -1,8 +1,11 @@
-"""Build the tracker workbook (.xlsx) from app/plan.json.
+"""Build the tracker workbook (.xlsx) from your PRIVATE tracker settings.
 
     pip install openpyxl
-    python tracker/build_tracker.py            # writes tracker/tracker.xlsx
-    python tracker/build_tracker.py my-plan.json out.xlsx
+    cp tracker/settings.example.json tracker/settings.json   # git-ignored; fill in your numbers
+    python tracker/build_tracker.py                           # writes tracker/tracker.xlsx
+    python tracker/build_tracker.py path/to/settings.json out.xlsx
+
+Settings hold weights, goal, milestones and habits, so they never go into the public app/.
 
 Upload the .xlsx to Google Drive and open it with Google Sheets (File > Save as Google Sheets).
 The app reads cells by position, so keep the layout described in tracker/LAYOUT.md.
@@ -19,10 +22,16 @@ from openpyxl.utils import get_column_letter as L
 from openpyxl.worksheet.datavalidation import DataValidation
 
 ROOT = Path(__file__).resolve().parent.parent
-plan = json.loads(Path(sys.argv[1] if len(sys.argv) > 1 else ROOT / "app" / "plan.json").read_text())
+if len(sys.argv) > 1:
+    src = Path(sys.argv[1])
+else:
+    src = ROOT / "tracker" / "settings.json"
+    if not src.exists():
+        src = ROOT / "tracker" / "settings.example.json"
+        print("tracker/settings.json not found, using the example settings")
+T = json.loads(src.read_text())
 OUT = sys.argv[2] if len(sys.argv) > 2 else str(ROOT / "tracker" / "tracker.xlsx")
-T = plan["tracker"]
-START = dt.date.fromisoformat(plan["startDate"])
+START = dt.date.fromisoformat(T["startDate"])
 DAYS, WEEKS = 364, 52
 HABIT = T["habit"]
 RULES = (T["dailyRules"] + [""] * 6)[:6]  # exactly 6 Y/N columns (J-O)
@@ -61,7 +70,7 @@ d = wb.active
 d.title = "Dashboard"
 for col, wdt in zip("ABCD", (34, 16, 16, 18)):
     d.column_dimensions[col].width = wdt
-d["A1"] = plan.get("name", "Health plan")
+d["A1"] = T.get("name", "Health plan")
 d["A1"].font = Font(bold=True, size=14)
 rows = [
     ("Start date", START),                                                                   # B2
