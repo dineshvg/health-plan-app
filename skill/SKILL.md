@@ -18,7 +18,7 @@ Read its `README.md` (plan.json schema), `tracker/LAYOUT.md` (cell contract) and
 - Privacy: two places, never mixed.
   - **Public** (app repo, published by GitHub Pages): `app/` only, meaning meals, weeks, pantry, generic eating `rules` and categories. Keep `name` generic.
     - Never public: weights, goal dates, conditions, medication, habits, job, family, city, or the person's name.
-    - Write `rules` so they reveal nothing about the person, e.g. "Protein at every meal". "No cigarettes" or "Low salt for my BP" belong only in the private `dailyRules`.
+    - Write `rules` so they reveal nothing about the person, e.g. "Protein at every meal". "No sugary drinks" or "Low salt for my BP" belong only in the private `dailyRules`.
   - **Private**: the plans repo (including the ONE copy of the tracker settings file) and the Google Sheet. The app reads every log, train and stats label from the sheet's header rows after sign-in.
   - Put the person's name, city, conditions and job in the settings `privateWords` list.
   - Before every push: `python3 tests/validate_plan.py --exclude <diet words> --private <settings.json>` must print OK. It scans every text in `plan.json`. Also read the diff for anything personal.
