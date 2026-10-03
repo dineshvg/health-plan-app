@@ -550,109 +550,644 @@
    "how": "Pizza night or eating out. Enjoy it, one plate, no \"cheat day\".",
    "buy": [],
    "note": "Tonight is the flexible meal. One plate, then the kitchen is closed."
+  },
+  "masalaOats": {
+   "name": "Masala oats + Skyr",
+   "kcal": 440,
+   "protein": 35,
+   "how": "60 g oats cooked savoury with onion, tomato, peas, mustard seeds and a pinch of turmeric. 250 g Skyr on the side (or as raita).",
+   "buy": [
+    {
+     "name": "Oats (Haferflocken)",
+     "qty": 60,
+     "unit": "g",
+     "cat": "carbs"
+    },
+    {
+     "name": "Skyr",
+     "qty": 250,
+     "unit": "g",
+     "cat": "dairy"
+    },
+    {
+     "name": "Tomatoes",
+     "qty": 1,
+     "unit": "pcs",
+     "cat": "veg"
+    },
+    {
+     "name": "Frozen peas",
+     "qty": 50,
+     "unit": "g",
+     "cat": "veg"
+    }
+   ]
+  },
+  "eggBhurji": {
+   "name": "Egg bhurji + chapati",
+   "kcal": 460,
+   "protein": 35,
+   "how": "Scramble 3 eggs with onion, tomato, green chili and 100 g Hüttenkäse, 1 tsp oil. 1 wholewheat chapati (30 g atta) or 1 slice Vollkornbrot.",
+   "buy": [
+    {
+     "name": "Eggs",
+     "qty": 3,
+     "unit": "pcs",
+     "cat": "protein"
+    },
+    {
+     "name": "Hüttenkäse",
+     "qty": 100,
+     "unit": "g",
+     "cat": "dairy"
+    },
+    {
+     "name": "Atta (wholewheat flour)",
+     "qty": 30,
+     "unit": "g",
+     "cat": "carbs"
+    },
+    {
+     "name": "Tomatoes",
+     "qty": 1,
+     "unit": "pcs",
+     "cat": "veg"
+    }
+   ]
+  },
+  "besanChilla": {
+   "name": "Besan chilla + Skyr",
+   "kcal": 450,
+   "protein": 37,
+   "how": "70 g besan whisked with water, onion, tomato, coriander, salt. Cook 2 thin pancakes with 1 tsp oil. 200 g Skyr with mint on the side.",
+   "buy": [
+    {
+     "name": "Besan (gram flour)",
+     "qty": 70,
+     "unit": "g",
+     "cat": "tins"
+    },
+    {
+     "name": "Skyr",
+     "qty": 200,
+     "unit": "g",
+     "cat": "dairy"
+    },
+    {
+     "name": "Tomatoes",
+     "qty": 1,
+     "unit": "pcs",
+     "cat": "veg"
+    },
+    {
+     "name": "Onions",
+     "qty": 0.5,
+     "unit": "pcs",
+     "cat": "veg"
+    }
+   ]
+  },
+  "paratha": {
+   "name": "Weekend paneer paratha + raita",
+   "kcal": 580,
+   "protein": 37,
+   "how": "1 paratha: 60 g atta dough filled with 80 g grated paneer, onion, chili; dry-roast, 1 tsp butter. Raita: 150 g Skyr + cucumber.",
+   "buy": [
+    {
+     "name": "Atta (wholewheat flour)",
+     "qty": 60,
+     "unit": "g",
+     "cat": "carbs"
+    },
+    {
+     "name": "Paneer",
+     "qty": 80,
+     "unit": "g",
+     "cat": "dairy"
+    },
+    {
+     "name": "Skyr",
+     "qty": 150,
+     "unit": "g",
+     "cat": "dairy"
+    },
+    {
+     "name": "Cucumber",
+     "qty": 0.5,
+     "unit": "pcs",
+     "cat": "veg"
+    }
+   ]
+  },
+  "chanaButtermilk": {
+   "name": "Roasted chana + Buttermilch",
+   "kcal": 250,
+   "protein": 18,
+   "how": "40 g roasted chickpeas (Asia shop) and 300 ml Buttermilch with a pinch of roasted cumin and salt.",
+   "buy": [
+    {
+     "name": "Roasted chana",
+     "qty": 40,
+     "unit": "g",
+     "cat": "tins"
+    },
+    {
+     "name": "Buttermilch",
+     "qty": 300,
+     "unit": "ml",
+     "cat": "dairy"
+    }
+   ]
+  },
+  "tikkaWrap": {
+   "name": "Chicken tikka wrap + mint raita",
+   "kcal": 600,
+   "protein": 46,
+   "how": "150 g chicken strips with tikka spice + 1 tbsp Skyr, pan-fried. 2 wholegrain wraps, onion, salad, 50 g Skyr with mint.",
+   "buy": [
+    {
+     "name": "Chicken breast",
+     "qty": 150,
+     "unit": "g",
+     "cat": "protein"
+    },
+    {
+     "name": "Wholegrain wraps",
+     "qty": 2,
+     "unit": "pcs",
+     "cat": "carbs"
+    },
+    {
+     "name": "Salad bag",
+     "qty": 0.5,
+     "unit": "bag",
+     "cat": "veg"
+    },
+    {
+     "name": "Skyr",
+     "qty": 70,
+     "unit": "g",
+     "cat": "dairy"
+    }
+   ]
+  },
+  "keema": {
+   "name": "Chicken keema matar + chapati",
+   "kcal": 560,
+   "protein": 50,
+   "portions": 2,
+   "freezes": true,
+   "how": "Fry onion, garlic, ginger, 1 tsp oil; brown 400 g Hähnchen- or Putenhack, add canned tomatoes, 200 g peas, garam masala, 15 min. 2 chapati (60 g atta) per plate.",
+   "buy": [
+    {
+     "name": "Hähnchen- or Putenhack",
+     "qty": 400,
+     "unit": "g",
+     "cat": "protein"
+    },
+    {
+     "name": "Frozen peas",
+     "qty": 200,
+     "unit": "g",
+     "cat": "veg"
+    },
+    {
+     "name": "Canned tomatoes",
+     "qty": 1,
+     "unit": "can",
+     "cat": "tins"
+    },
+    {
+     "name": "Onions",
+     "qty": 1,
+     "unit": "pcs",
+     "cat": "veg"
+    },
+    {
+     "name": "Atta (wholewheat flour)",
+     "qty": 120,
+     "unit": "g",
+     "cat": "carbs"
+    }
+   ]
+  },
+  "palakChicken": {
+   "name": "Palak chicken + rice",
+   "kcal": 600,
+   "protein": 52,
+   "portions": 2,
+   "freezes": true,
+   "how": "Fry onion, garlic, ginger, 1 tsp oil; add 360 g diced chicken, 450 g frozen spinach, spices, 10 min; stir in 100 g Skyr off the heat. 1 cupped hand rice per plate.",
+   "buy": [
+    {
+     "name": "Chicken breast",
+     "qty": 360,
+     "unit": "g",
+     "cat": "protein"
+    },
+    {
+     "name": "Spinach (frozen)",
+     "qty": 450,
+     "unit": "g",
+     "cat": "veg"
+    },
+    {
+     "name": "Skyr",
+     "qty": 100,
+     "unit": "g",
+     "cat": "dairy"
+    },
+    {
+     "name": "Onions",
+     "qty": 1,
+     "unit": "pcs",
+     "cat": "veg"
+    },
+    {
+     "name": "Basmati rice",
+     "qty": 150,
+     "unit": "g",
+     "cat": "carbs"
+    }
+   ]
+  },
+  "biryani": {
+   "name": "One-pot chicken biryani + raita",
+   "kcal": 600,
+   "protein": 50,
+   "portions": 2,
+   "how": "Marinate 360 g chicken in 150 g Skyr + biryani masala. Fry onion with 2 tsp oil, add chicken, 150 g rinsed basmati and 300 ml water, cover, low heat 20 min. Cucumber on the side.",
+   "buy": [
+    {
+     "name": "Chicken breast",
+     "qty": 360,
+     "unit": "g",
+     "cat": "protein"
+    },
+    {
+     "name": "Skyr",
+     "qty": 150,
+     "unit": "g",
+     "cat": "dairy"
+    },
+    {
+     "name": "Basmati rice",
+     "qty": 150,
+     "unit": "g",
+     "cat": "carbs"
+    },
+    {
+     "name": "Onions",
+     "qty": 2,
+     "unit": "pcs",
+     "cat": "veg"
+    },
+    {
+     "name": "Cucumber",
+     "qty": 0.5,
+     "unit": "pcs",
+     "cat": "veg"
+    }
+   ]
+  },
+  "tandooriTray": {
+   "name": "Oven tray: tandoori chicken + potatoes + veg",
+   "kcal": 600,
+   "protein": 48,
+   "portions": 2,
+   "how": "200 °C, 30 min: 360 g chicken marinated in 100 g Skyr + tandoori masala, potatoes, peppers, cauliflower, 1 tbsp oil.",
+   "buy": [
+    {
+     "name": "Chicken breast",
+     "qty": 360,
+     "unit": "g",
+     "cat": "protein"
+    },
+    {
+     "name": "Skyr",
+     "qty": 100,
+     "unit": "g",
+     "cat": "dairy"
+    },
+    {
+     "name": "Potatoes",
+     "qty": 500,
+     "unit": "g",
+     "cat": "carbs"
+    },
+    {
+     "name": "Cauliflower",
+     "qty": 0.5,
+     "unit": "pcs",
+     "cat": "veg"
+    },
+    {
+     "name": "Peppers",
+     "qty": 1,
+     "unit": "pcs",
+     "cat": "veg"
+    }
+   ]
+  },
+  "fishCurry": {
+   "name": "Fish curry + rice",
+   "kcal": 540,
+   "protein": 43,
+   "portions": 2,
+   "freezes": true,
+   "how": "Onion-tomato gravy with garlic, ginger, curry powder and 100 ml light coconut milk; add 400 g Alaska-Seelachs (frozen) for the last 8 min. 1 cupped hand rice per plate.",
+   "buy": [
+    {
+     "name": "Alaska-Seelachs (frozen)",
+     "qty": 400,
+     "unit": "g",
+     "cat": "protein"
+    },
+    {
+     "name": "Light coconut milk",
+     "qty": 100,
+     "unit": "ml",
+     "cat": "tins"
+    },
+    {
+     "name": "Canned tomatoes",
+     "qty": 1,
+     "unit": "can",
+     "cat": "tins"
+    },
+    {
+     "name": "Onions",
+     "qty": 1,
+     "unit": "pcs",
+     "cat": "veg"
+    },
+    {
+     "name": "Basmati rice",
+     "qty": 150,
+     "unit": "g",
+     "cat": "carbs"
+    }
+   ]
+  },
+  "eggCurry": {
+   "name": "Egg curry + rice + raita",
+   "kcal": 620,
+   "protein": 41,
+   "portions": 1,
+   "how": "3 boiled eggs in an onion-tomato masala (1 tsp oil), 10 min. 1 cupped hand rice, 150 g Skyr with cucumber.",
+   "buy": [
+    {
+     "name": "Eggs",
+     "qty": 3,
+     "unit": "pcs",
+     "cat": "protein"
+    },
+    {
+     "name": "Canned tomatoes",
+     "qty": 0.5,
+     "unit": "can",
+     "cat": "tins"
+    },
+    {
+     "name": "Onions",
+     "qty": 1,
+     "unit": "pcs",
+     "cat": "veg"
+    },
+    {
+     "name": "Basmati rice",
+     "qty": 75,
+     "unit": "g",
+     "cat": "carbs"
+    },
+    {
+     "name": "Skyr",
+     "qty": 150,
+     "unit": "g",
+     "cat": "dairy"
+    },
+    {
+     "name": "Cucumber",
+     "qty": 0.5,
+     "unit": "pcs",
+     "cat": "veg"
+    }
+   ]
   }
  },
- "weeks": [
-  [
-   {
-    "training": "A",
-    "b": "oatsSkyr",
-    "l": "@curry",
-    "s": "skyrFruit",
-    "d": "chili"
-   },
-   {
-    "b": "eggsBread",
-    "l": "@chili",
-    "s": "eggsApple",
-    "d": "curry"
-   },
-   {
-    "training": "B",
-    "b": "oatsSkyr",
-    "l": "saladTuna",
-    "s": "proteinYog",
-    "d": "salmonTray",
-    "prep": "Wednesday top-up (30 min): oven tray dinner tonight, or defrost a frozen portion."
-   },
-   {
-    "b": "quarkOats",
-    "l": "@salmonTray",
-    "s": "huttenVeg",
-    "d": "bolognese"
-   },
-   {
-    "b": "eggsBread",
-    "l": "@bolognese",
-    "s": "skyrFruit",
-    "d": "flexible"
-   },
-   {
-    "training": "C",
-    "b": "oatsSkyr",
-    "l": "wraps",
-    "s": "eggsApple",
-    "d": "dal"
-   },
-   {
-    "b": "weekendBreakfast",
-    "l": "@dal",
-    "s": "proteinYog",
-    "d": "stirfry",
-    "batch": "chili",
-    "prep": "Sunday batch cook (~90 min): a pot of chili (for Monday lunch + 2 freezer boxes), a pot of rice, a tray of roasted veg, 10 boiled eggs."
-   }
-  ],
-  [
-   {
-    "training": "A",
-    "b": "oatsSkyr",
-    "l": "@chili",
-    "s": "skyrFruit",
-    "d": "curry"
-   },
-   {
-    "b": "eggsBread",
-    "l": "@curry",
-    "s": "huttenVeg",
-    "d": "bolognese"
-   },
-   {
-    "training": "B",
-    "b": "oatsSkyr",
-    "l": "@bolognese",
-    "s": "proteinYog",
-    "d": "chickenTray",
-    "prep": "Wednesday top-up (30 min): oven tray dinner tonight, or defrost a frozen portion."
-   },
-   {
-    "b": "quarkOats",
-    "l": "@chickenTray",
-    "s": "eggsApple",
-    "d": "dal"
-   },
-   {
-    "b": "eggsBread",
-    "l": "@dal",
-    "s": "skyrFruit",
-    "d": "flexible"
-   },
-   {
-    "training": "C",
-    "b": "oatsSkyr",
-    "l": "wraps",
-    "s": "proteinYog",
-    "d": "stirfry"
-   },
-   {
-    "b": "weekendBreakfast",
-    "l": "saladTuna",
-    "s": "eggsApple",
-    "d": "salmonTray",
-    "batch": "curry",
-    "prep": "Sunday batch cook (~90 min): a pot of chicken curry (for Monday lunch + freezer), a pot of rice, a tray of roasted veg, 10 boiled eggs."
-   }
-  ]
+ "styles": [
+  {
+   "key": "mix",
+   "label": "Everyday mix",
+   "weeks": [
+    [
+     {
+      "training": "A",
+      "b": "oatsSkyr",
+      "l": "@curry",
+      "s": "skyrFruit",
+      "d": "chili"
+     },
+     {
+      "b": "eggsBread",
+      "l": "@chili",
+      "s": "eggsApple",
+      "d": "curry"
+     },
+     {
+      "training": "B",
+      "b": "oatsSkyr",
+      "l": "saladTuna",
+      "s": "proteinYog",
+      "d": "salmonTray",
+      "prep": "Wednesday top-up (30 min): oven tray dinner tonight, or defrost a frozen portion."
+     },
+     {
+      "b": "quarkOats",
+      "l": "@salmonTray",
+      "s": "huttenVeg",
+      "d": "bolognese"
+     },
+     {
+      "b": "eggsBread",
+      "l": "@bolognese",
+      "s": "skyrFruit",
+      "d": "flexible"
+     },
+     {
+      "training": "C",
+      "b": "oatsSkyr",
+      "l": "wraps",
+      "s": "eggsApple",
+      "d": "dal"
+     },
+     {
+      "b": "weekendBreakfast",
+      "l": "@dal",
+      "s": "proteinYog",
+      "d": "stirfry",
+      "batch": "chili",
+      "prep": "Sunday batch cook (~90 min): a pot of chili (for Monday lunch + 2 freezer boxes), a pot of rice, a tray of roasted veg, 10 boiled eggs."
+     }
+    ],
+    [
+     {
+      "training": "A",
+      "b": "oatsSkyr",
+      "l": "@chili",
+      "s": "skyrFruit",
+      "d": "curry"
+     },
+     {
+      "b": "eggsBread",
+      "l": "@curry",
+      "s": "huttenVeg",
+      "d": "bolognese"
+     },
+     {
+      "training": "B",
+      "b": "oatsSkyr",
+      "l": "@bolognese",
+      "s": "proteinYog",
+      "d": "chickenTray",
+      "prep": "Wednesday top-up (30 min): oven tray dinner tonight, or defrost a frozen portion."
+     },
+     {
+      "b": "quarkOats",
+      "l": "@chickenTray",
+      "s": "eggsApple",
+      "d": "dal"
+     },
+     {
+      "b": "eggsBread",
+      "l": "@dal",
+      "s": "skyrFruit",
+      "d": "flexible"
+     },
+     {
+      "training": "C",
+      "b": "oatsSkyr",
+      "l": "wraps",
+      "s": "proteinYog",
+      "d": "stirfry"
+     },
+     {
+      "b": "weekendBreakfast",
+      "l": "saladTuna",
+      "s": "eggsApple",
+      "d": "salmonTray",
+      "batch": "curry",
+      "prep": "Sunday batch cook (~90 min): a pot of chicken curry (for Monday lunch + freezer), a pot of rice, a tray of roasted veg, 10 boiled eggs."
+     }
+    ]
+   ]
+  },
+  {
+   "key": "indian",
+   "label": "Indian home-style",
+   "weeks": [
+    [
+     {
+      "training": "A",
+      "b": "masalaOats",
+      "l": "@curry",
+      "s": "skyrFruit",
+      "d": "palakChicken"
+     },
+     {
+      "b": "eggBhurji",
+      "l": "@palakChicken",
+      "s": "chanaButtermilk",
+      "d": "biryani"
+     },
+     {
+      "training": "B",
+      "b": "masalaOats",
+      "l": "@biryani",
+      "s": "proteinYog",
+      "d": "tandooriTray",
+      "prep": "Wednesday top-up (30 min): tandoori tray in the oven tonight, or defrost a frozen portion."
+     },
+     {
+      "b": "besanChilla",
+      "l": "@tandooriTray",
+      "s": "huttenVeg",
+      "d": "fishCurry"
+     },
+     {
+      "b": "eggBhurji",
+      "l": "@fishCurry",
+      "s": "skyrFruit",
+      "d": "flexible"
+     },
+     {
+      "training": "C",
+      "b": "masalaOats",
+      "l": "tikkaWrap",
+      "s": "eggsApple",
+      "d": "dal"
+     },
+     {
+      "b": "paratha",
+      "l": "@dal",
+      "s": "proteinYog",
+      "d": "eggCurry",
+      "batch": "keema",
+      "prep": "Sunday batch cook (~90 min): a pot of keema matar (Monday lunch + 2 freezer boxes), a pot of rice, chapati dough for 2 days, 10 boiled eggs."
+     }
+    ],
+    [
+     {
+      "training": "A",
+      "b": "masalaOats",
+      "l": "@keema",
+      "s": "skyrFruit",
+      "d": "biryani"
+     },
+     {
+      "b": "eggBhurji",
+      "l": "@biryani",
+      "s": "huttenVeg",
+      "d": "palakChicken"
+     },
+     {
+      "training": "B",
+      "b": "masalaOats",
+      "l": "@palakChicken",
+      "s": "proteinYog",
+      "d": "tandooriTray",
+      "prep": "Wednesday top-up (30 min): tandoori tray in the oven tonight, or defrost a frozen portion."
+     },
+     {
+      "b": "besanChilla",
+      "l": "@tandooriTray",
+      "s": "chanaButtermilk",
+      "d": "dal"
+     },
+     {
+      "b": "eggBhurji",
+      "l": "@dal",
+      "s": "skyrFruit",
+      "d": "flexible"
+     },
+     {
+      "training": "C",
+      "b": "masalaOats",
+      "l": "tikkaWrap",
+      "s": "chanaButtermilk",
+      "d": "fishCurry"
+     },
+     {
+      "b": "paratha",
+      "l": "@fishCurry",
+      "s": "eggsApple",
+      "d": "eggCurry",
+      "batch": "curry",
+      "prep": "Sunday batch cook (~90 min): a pot of chicken curry (Monday lunch + freezer), a pot of rice, chapati dough for 2 days, 10 boiled eggs."
+     }
+    ]
+   ]
+  }
  ],
  "pantry": [
   {
@@ -753,6 +1288,22 @@
   },
   {
    "name": "Tea",
+   "cat": "other"
+  },
+  {
+   "name": "Atta (wholewheat flour)",
+   "cat": "carbs"
+  },
+  {
+   "name": "Besan (gram flour)",
+   "cat": "tins"
+  },
+  {
+   "name": "Frozen peas",
+   "cat": "veg"
+  },
+  {
+   "name": "Spices: garam masala, tandoori, chaat masala, mustard seeds",
    "cat": "other"
   }
  ]

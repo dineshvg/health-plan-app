@@ -43,10 +43,24 @@ for key in ("tracker", "person"):
     if key in p:
         errors.append(f'plan.json has a "{key}" section: personal settings belong in the private tracker settings')
 
+# food styles: "styles" (one or more cuisines, each with its own rotation) or a single "weeks" rotation
+if "styles" in p and "weeks" in p:
+    errors.append('plan.json has both "styles" and "weeks": use one')
+STYLES = p.get("styles") or [{"key": "default", "label": "Default", "weeks": p.get("weeks", [])}]
+keys = [st.get("key") for st in STYLES]
+if len(set(keys)) != len(keys) or not all(keys):
+    errors.append(f"styles need unique, non-empty keys: {keys}")
+for st in STYLES:
+    if not st.get("label"):
+        errors.append(f"style {st.get('key')!r} has no label")
+    if not st.get("weeks"):
+        errors.append(f"style {st.get('key')!r} has no weeks")
+
 # meal references and daily totals
 M = p["meals"]
 days = []
-for wi, week in enumerate(p["weeks"], 1):
+for st, wi, week in [(st, wi, w) for st in STYLES for wi, w in enumerate(st.get("weeks", []), 1)]:
+    wi = f"{st['key']} {wi}" if len(STYLES) > 1 else wi
     if len(week) != 7:
         errors.append(f"week {wi} has {len(week)} days, needs 7 (Mon..Sun)")
     for di, day in enumerate(week):
@@ -101,7 +115,7 @@ if a.private:
         if re.search(rf"(?<![\d.]){n}(\.0)?\s*(kg|kilo)", TEXT):
             errors.append(f"weight {num:g} kg from the private settings appears in plan.json")
     # training days in the plan vs the tracker's sessions
-    plan_days = sorted({(d.get("training"), i) for w in p["weeks"] for i, d in enumerate(w) if d.get("training")})
+    plan_days = sorted({(d.get("training"), i) for st in STYLES for w in st.get("weeks", []) for i, d in enumerate(w) if d.get("training")})
     sess_days = sorted({(x["code"], x["dayOffset"]) for x in s.get("sessions", [])})
     if plan_days and sess_days and set(plan_days) != set(sess_days):
         errors.append(f"training days in plan.json {plan_days} don't match tracker sessions {sess_days} (code, weekday 0=Mon)")

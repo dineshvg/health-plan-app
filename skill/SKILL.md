@@ -31,6 +31,7 @@ Ask about:
 - equipment (gym/home/none), training days per week and minutes
 - job/activity, family and schedule constraints
 - food limits (diet, allergies, dislikes, cooking time, budget)
+- one or two cuisines they like to eat (e.g. "Indian and Mediterranean"); each becomes a food style they can switch between. Default: one everyday style using local supermarket food
 - health conditions, sleep
 - one habit to cut (smoking, snacks, sugary drinks…), and alcohol per week
 - the exact Google account addresses that need access (they can't be defaulted), and their GitHub username and the app repo name
@@ -70,7 +71,7 @@ If something goes unanswered, pick a sensible default, say which one you picked,
 - `plans/food.md`:
   - the targets from §2, with the working shown
   - 6 simple rules
-  - a 2-week rotation with a Sunday batch cook and planned leftovers
+  - a 2-week rotation per food style, each with a Sunday batch cook and planned leftovers
   - a pantry list
 - `settings.json`: the ONLY copy of the tracker settings (see §5). It is fine here because this repo is private. Point `build_tracker.py` and `validate_plan.py` at it. Don't keep a second copy in the app repo.
 - Optional: a sleep and habit plan, and a weekly rhythm.
@@ -78,7 +79,10 @@ If something goes unanswered, pick a sensible default, say which one you picked,
 ## 4. App data: `app/plan.json` (public repo)
 Create the person's own public repo from the template ("Use this template", or ask them to create an empty public repo and copy the template in). Replace ALL example meals:
 - `meals`: kcal, protein, a short `how`, and `buy` items `{name, qty, unit, cat}` per time it's cooked (local product names). Set `portions` when it's cooked for later.
-- `weeks`: 2 weeks (Mon..Sun) of `{training?, b, l, s, d, prep?, batch?}`. `"@key"` means leftovers of that meal. Daily totals, leftovers included, within ±10 % of `target`; protein ≥ 90 % of target.
+- `styles`: one entry per cuisine from the interview, `{key, label, weeks}`, e.g. `{"key": "indian", "label": "Indian home-style"}`. With a single style you may use `weeks` instead.
+  - `weeks`: 2 weeks (Mon..Sun) of `{training?, b, l, s, d, prep?, batch?}`. `"@key"` means leftovers of that meal. Daily totals, leftovers included, within ±10 % of `target`; protein ≥ 90 % of target, in every style.
+  - Styles share `meals`, `pantry` and `target`; reuse snacks and breakfasts across styles where it fits. Use real dishes of that cuisine made from ingredients the local shops sell (name a specialist shop in `shopNote` if one is needed, e.g. an Asian shop for besan).
+  - Each style keeps the same training weekdays and its own Sunday batch → Monday leftovers chain.
   - Plan a Sunday batch cook that feeds Monday's leftovers.
   - On `startDate` itself the app cooks an `@` meal fresh.
 - `categories`: shopping aisles in store order. Rename the keys and labels to fit the diet, e.g. "Eggs, tofu & soy" for vegetarians.

@@ -45,9 +45,23 @@
   const appWeekIndex = iso => Math.floor((dayNum(iso) - dayNum(state.start)) / 7); // 0 = week 1
   const templateFor = iso => {
     const w = appWeekIndex(iso);
-    const n = MEALS.WEEKS.length;
-    return MEALS.WEEKS[((w % n) + n) % n][weekdayIdx(iso)];
+    const weeks = (MEALS.STYLES.find(x => x.key === state.style) || MEALS.STYLES[0]).weeks;
+    const n = weeks.length;
+    return weeks[((w % n) + n) % n][weekdayIdx(iso)];
   };
+
+  // Food styles (cuisines): a switch in the Meals tab when the plan has more than one.
+  function renderStyleSeg() {
+    const el = $('styleSeg');
+    el.classList.toggle('hidden', MEALS.STYLES.length < 2);
+    el.innerHTML = MEALS.STYLES.map(x =>
+      `<button data-style="${esc(x.key)}" class="${x.key === state.style ? 'active' : ''}">${esc(x.label)}</button>`).join('');
+  }
+  $('styleSeg').addEventListener('click', e => {
+    const b = e.target.closest('button[data-style]'); if (!b) return;
+    state.style = b.dataset.style; store.set('foodStyle', state.style);
+    renderStyleSeg(); renderMeals();
+  });
 
   function renderMeals() {
     const iso = state.mealDate;
@@ -441,9 +455,12 @@
   /* ---------- init ---------- */
   async function loadPlan() {
     const p = await (await fetch('plan.json', { cache: 'no-cache' })).json();
-    MEALS = { M: p.meals, WEEKS: p.weeks, PANTRY: p.pantry.map(i => [i.name, i.cat]), RULES: p.rules || [], CATS: p.categories, TARGET: p.target, SESSIONS: p.sessionsPerWeek,
+    const styles = p.styles && p.styles.length ? p.styles : [{ key: 'default', label: 'Default', weeks: p.weeks }];
+    MEALS = { M: p.meals, STYLES: styles, PANTRY: p.pantry.map(i => [i.name, i.cat]), RULES: p.rules || [], CATS: p.categories, TARGET: p.target, SESSIONS: p.sessionsPerWeek,
       REST_NOTE: p.restDayNote || '', SHOP_NOTE: p.shopNote || 'Quantities are for the planned portions: round up to pack sizes. Items marked "low" come from Keep at home.' };
     state.start = p.startDate;
+    const saved = store.get('foodStyle', '');
+    state.style = styles.some(x => x.key === saved) ? saved : styles[0].key;
     document.title = p.name || document.title;
     document.querySelector('header h1').textContent = p.name || 'Health plan';
   }
@@ -451,6 +468,7 @@
     try { await loadPlan(); } catch (err) { fail('Could not load plan.json: ' + err.message); return; }
     const today = todayIso();
     state.mealDate = today;
+    renderStyleSeg();
     $('date').value = dayNum(today) < dayNum(state.start) ? state.start : today;
     state.week = Math.max(1, Math.min(52, appWeekIndex(today) + 1));
     loadToken();

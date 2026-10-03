@@ -60,6 +60,26 @@ const check = (ok, msg) => { console.log((ok ? 'PASS ' : 'FAIL ') + msg); if (!o
   check((await page.locator('#mealList .meal').count()) >= 4, 'Meals shows 4 meals');
   check(/kcal/.test(await page.textContent('#mealList .pill')), 'Meals shows day totals');
 
+  // Food styles: with more than one, the switch changes the meals and the shopping list follows.
+  const styles = plan.styles || [];
+  if (styles.length > 1) {
+    const before = await page.locator('#mealList .meal .name').allTextContents();
+    await page.click(`#styleSeg button[data-style="${styles[1].key}"]`);
+    const after = await page.locator('#mealList .meal .name').allTextContents();
+    check(before.join() !== after.join(), `Style switch shows ${styles[1].label} meals`);
+    await page.click('nav button[data-tab=shop]');
+    const items = (await page.locator('#shopList .card').allTextContents()).join(' ');
+    const used = st => new Set(st.weeks.flat().flatMap(d => [d.b, d.l, d.s, d.d, d.batch]).filter(Boolean).map(k => k.replace(/^@/, '')));
+    const first = used(styles[0]);
+    const only = [...used(styles[1])].filter(k => !first.has(k)).map(k => plan.meals[k]).filter(m => (m.buy || []).length);
+    const names = only.flatMap(m => m.buy.map(b => b.name)).filter(n => !items.includes(n) === false);
+    check(only.length === 0 || names.length > 0, 'Shopping list follows the selected style');
+    await page.click('nav button[data-tab=meals]');
+    await page.click(`#styleSeg button[data-style="${styles[0].key}"]`);
+  } else {
+    check(await page.locator('#styleSeg.hidden').count() === 1, 'Style switch hidden with one style');
+  }
+
   await page.click('nav button[data-tab=shop]');
   check((await page.locator('#shopList .card h2').count()) >= 2, 'Shop groups items by category');
   await page.click('#shopSeg button[data-view=pantry]');

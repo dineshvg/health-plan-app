@@ -6,7 +6,7 @@
 
 **[Try the demo](https://dineshvg.github.io/health-plan-app/)** (example plan, made-up person) · **[Download the skill](https://github.com/dineshvg/health-plan-app/raw/main/skill/health-plan-to-app.zip)** · **[Read the story behind it](https://medium.com/@dineshvg.1023/i-asked-an-ai-agent-for-a-health-plan-it-built-me-an-app-0fef893d8da4)**
 
-A plan you can carry in your pocket: an installable phone app (PWA) that tells you **what to eat today**, builds **this week's shopping list**, keeps a **"keep at home"** pantry list, and lets you **log weight, habits, workouts and a Sunday review** straight into your own Google Sheet.
+A plan you can carry in your pocket: an installable phone app (PWA) that tells you **what to eat today** (in one or two cuisines you choose), builds **this week's shopping list**, keeps a **"keep at home"** pantry list, and lets you **log weight, habits, workouts and a Sunday review** straight into your own Google Sheet.
 
 - No backend, no account with anyone: the app is static files on GitHub Pages, your data lives in your Google Sheet.
 - Works offline for meals and shopping. Logging needs a connection and Google sign-in.
@@ -76,16 +76,22 @@ After changing anything in `app/`, run `npm install && npm test` (basic plan che
       "buy": [{ "name": "Kidney beans", "qty": 1, "unit": "can", "cat": "tins" }]  // per time it is cooked
     }
   },
-  "weeks": [                              // 1..n weeks that rotate; each is Monday..Sunday
-    [ { "training": "A", "b": "oatsSkyr", "l": "@curry", "s": "skyrFruit", "d": "chili",
-        "prep": "optional note for the day", "batch": "optional meal key cooked extra that day" }, ... ]
+  "styles": [                             // food styles (cuisines), switched in the Meals tab; 1 or more
+    { "key": "mix", "label": "Everyday mix",
+      "weeks": [                          // 1..n weeks that rotate; each is Monday..Sunday
+        [ { "training": "A", "b": "oatsSkyr", "l": "@curry", "s": "skyrFruit", "d": "chili",
+            "prep": "optional note for the day", "batch": "optional meal key cooked extra that day" }, ... ]
+      ] },
+    { "key": "indian", "label": "Indian home-style", "weeks": [ ... ] }
   ],
+  // or, for a single style: "weeks": [ ... ] instead of "styles"
   "pantry": [{ "name": "Oats", "cat": "carbs" }]    // "keep at home"; ticking "low" adds it to the shopping list
 }
 ```
 
 - `"@curry"` means "leftovers of curry": shown with the recipe, nothing added to the shopping list. On the plan's very first day (`startDate`) there are no leftovers yet, so the app shows it as cooked fresh and puts its ingredients on week 1's list.
 - Shopping quantities are the sum of every `buy` item in that week's cooked meals (Monday to Sunday). Pantry items marked "low" are added, or flagged if already on the list.
+- **Two cuisines:** each style has its own rotation; all styles share `meals`, `pantry` and the targets. The app remembers the chosen style and builds the shopping list from it. Keep training letters on the same weekdays in every style.
 - Kcal/protein per day include leftovers. `python3 tests/validate_plan.py --exclude pork,ham` checks totals, meal keys, categories, and excluded words anywhere in the plan (meals, prep notes, rules, categories, notes).
 
 ## Privacy
