@@ -29,6 +29,8 @@ Status: `todo` · `doing` · `waiting on person` · `done`
 | OAuth Client ID | |
 | Google accounts | |
 | Start date (Monday) | |
+| targets.py inputs (sex, age, height, activity) | |
+| BMR / TDEE | |
 | Target kcal / protein | |
 | Goal date (agreed) | |
 | Food styles | |

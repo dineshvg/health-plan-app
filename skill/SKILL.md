@@ -19,6 +19,9 @@ Template repo: https://github.com/dineshvg/health-plan-app (public). Reuse it; d
 
 Read [references/guardrails.md](references/guardrails.md) in full before the interview. In short, **no calorie-deficit plan** when the person is under 18, pregnant, has or had an eating disorder (or the conversation suggests one), or wants a goal under BMI 18.5. Say so kindly in plain words and offer what is still safe. `targets.py` refuses some of these (exit 2); the rest are your job.
 
+- **Order:** the hard-stop questions (age, pregnancy/breastfeeding, eating-disorder history, conditions and medication) are asked in the interview. Show **no kcal or protein numbers** until they are answered. Before that you may run `targets.py` as a preview and tell the person in words whether their date is realistic, including the realistic date it gives.
+- **A hard stop ends the build:** don't create repos, don't ask for Google or GitHub accounts, don't write STATUS.md. Give the safe alternative in the chat (e.g. an activity plan without calorie numbers).
+
 ## Modes
 
 Pick one from the request, then follow it. If a `STATUS.md` exists for this person, never start `new`.

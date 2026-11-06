@@ -1,6 +1,6 @@
 # After launch: weekly review, changes, next block
 
-Always start by reading the private STATUS.md.
+Always start by reading the private STATUS.md. If you can't reach it, ask the person for the plans repo or to paste it. Never use anyone else's files. The BMR in its Facts is the floor for any kcal change.
 
 ## Weekly review
 

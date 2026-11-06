@@ -4,7 +4,7 @@ Not medical advice. Every plan says so, and says "check with your GP" where belo
 
 ## Hard stops: no calorie-deficit plan
 
-Stop the weight-loss part, explain kindly in plain words, and offer what is still safe. Record the stop in STATUS.md (no detail beyond "deficit plan not offered").
+Stop the weight-loss part, explain kindly in plain words, and offer what is still safe, in the chat. Don't create repos, ask for accounts or write STATUS.md.
 
 | Situation | Do instead |
 |---|---|
@@ -15,6 +15,8 @@ Stop the weight-loss part, explain kindly in plain words, and offer what is stil
 | Goal under BMI 18.5 | Don't plan towards it. `targets.py` refuses this |
 
 Never negotiate a hard stop down to "a smaller deficit".
+
+Don't give helpline phone numbers from memory. Look up the current service for the person's country (web search) and link its official page, or ask which country they're in first.
 
 ## Conditions: plan, but carefully
 
