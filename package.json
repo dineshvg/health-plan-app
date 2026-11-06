@@ -2,7 +2,7 @@
   "name": "health-plan-app",
   "private": true,
   "scripts": {
-    "test": "python3 tests/validate_plan.py && node tests/smoke.js"
+    "test": "python3 tests/test_targets.py && python3 skill/build_zip.py --check && python3 tests/validate_plan.py && node tests/smoke.js"
   },
   "devDependencies": {
     "playwright": "^1.48.0"
