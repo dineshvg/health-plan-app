@@ -11,17 +11,17 @@ Reproduce `tracker/build_tracker.py`'s layout exactly:
 3. Conditional-format rules: one sheet per request.
 4. Y/N data validation.
 5. Verify formulas: write sample rows, read them back, then clear them.
-6. Share as Editor with every account from the interview.
+6. Share as Editor with every account the person gave.
 
 ## Without a connector
 
 ```bash
 pip install openpyxl
-python3 tracker/build_tracker.py <path/to/settings.json>   # writes tracker/tracker.xlsx
+python3 tracker/build_tracker.py <plans-repo>/settings.json <plans-repo>/tracker.xlsx
 ```
 
-Give the person the `.xlsx`; their stage-6 checklist then includes: upload to Drive → open with Google Sheets → File → Save as Google Sheets → share as Editor with the accounts → send the sheet URL.
+Always pass the output path: the default (`tracker/tracker.xlsx`) is inside the public app repo, and the file holds weights and dates. No extra formula check is needed on this path; `build_tracker.py` is the reference layout. Give the person the `.xlsx`; their stage-6 checklist then includes: upload to Drive → open with Google Sheets → File → Save as Google Sheets → share as Editor with the accounts → send the sheet URL.
 
 ## Record
 
-Sheet ID in STATUS.md Facts. It goes into `app/config.js` `SHEET_ID` at stage 7.
+Sheet ID in STATUS.md Facts as soon as it exists (stage 5 with a connector; stage 6 when the person sends the URL). It goes into `app/config.js` `SHEET_ID` at stage 7.

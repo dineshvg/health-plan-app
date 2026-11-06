@@ -21,6 +21,6 @@ Deliver:
 - install steps: Android Chrome ⋮ → Install app; iPhone Safari Share → Add to Home Screen
 - sign-in steps (first open → Sign in with Google → allow Sheets)
 - offer the weekly loop ([weekly-loop.md](weekly-loop.md)), e.g. as a Sunday scheduled task
-- if the agent has memory: a note with the sheet ID, repos and URL (no health details)
+- if the agent has memory and the person is its own user: a note with the sheet ID, repos and URL (no health details). Never store a third party's details in someone else's memory
 
 Mark stage 9 `done` in STATUS.md.

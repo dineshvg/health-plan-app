@@ -20,7 +20,7 @@ python3 scripts/targets.py --sex m --age 41 --height 180 --weight 92 --goal-weig
 | `feet` | 1.55 | on-your-feet job (nurse, retail, trades) or 4–5 workouts per week |
 | `very` | 1.725 | very active |
 
-If unsure between two, pick the lower one and say so.
+If unsure between two, pick the lower one and say so. An on-your-feet job plus 2–3 workouts is still `feet`. For rotating shifts, use the typical week.
 
 ## What the script does (so you can explain it)
 
@@ -40,4 +40,11 @@ If unsure between two, pick the lower one and say so.
 
 ## Agree, then record
 
-Show the person the working (BMR → TDEE → deficit → target, rate kg/week, the date). They **agree** the date and kcal before stage 3. Put `targetKcal`, `protein.use`, `goalDate` and `milestones` in STATUS.md; they feed `settings.json` and `plan.json` `target`.
+Show the person the working (BMR → TDEE → deficit → target, rate kg/week, the date). A faster plan than a 500 deficit exists only with `--harder`, and only when the needed deficit is 500–750; say that accurately if they ask for an earlier date.
+
+In the same message, ask for what later stages need and can't default:
+
+- the exact Google accounts that need access to the sheet
+- their GitHub username, the app repo name (default `health-plan`) and the private plans repo name (default `<user>/<name>-plans`)
+
+They **agree** the date and kcal before stage 3. Then create the private plans repo (or ask them to, if you can't), copy `templates/STATUS.md` into it, and fill Facts (including `targets.py` inputs, BMR/TDEE, `targetKcal`, `protein.use`, `goalDate`, `milestones`) and Defaults chosen, with no health detail. Mark stages 1 and 2 `done`. Log only what has happened, never an agreement still to come.

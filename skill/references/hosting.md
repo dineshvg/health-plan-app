@@ -6,13 +6,13 @@ Send ONE message with every click still needed, numbered, with exact names. Incl
 
 1. **Google Cloud** ([console.cloud.google.com](https://console.cloud.google.com)):
    1. New project → APIs & Services → Library → enable **Google Sheets API**.
-   2. OAuth consent screen: External, Testing; add every interview account as a **test user**.
+   2. OAuth consent screen: External, Testing; add every account the person gave as a **test user**.
    3. Clients → Create client → **Web application**; Authorized JavaScript origin `https://<user>.github.io`.
    4. Send me the **Client ID** (never the client secret).
 2. **GitHub**: app repo → Settings → Pages → Source: **GitHub Actions**. (Private repos can't use free Pages.)
 3. **Sheet** (only if built as .xlsx): upload, Save as Google Sheets, share as Editor, send the URL.
 
-Record what's done in STATUS.md as answers arrive. Stage is done when you have the Client ID and Pages is set.
+Record what's done in STATUS.md as answers arrive. Stage is done when the person confirms: test users added, Pages set, and (without a connector) the sheet shared. You have the Client ID and the sheet URL. A missing test user is the usual reason a second account can't sign in, so ask if they don't mention it.
 
 ## Stage 7: wire and deploy 🤖
 

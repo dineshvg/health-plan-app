@@ -60,7 +60,7 @@ After changing anything in `app/`, run `npm install && npm test` (target-rule ch
 {
   "name": "Health plan",                 // app title
   "startDate": "2026-10-05",             // a Monday; week 1 of the plan (the sheet's Dashboard!B2 wins once signed in)
-  "target": { "kcal": 2000, "protein": 140 },
+  "target": { "kcal": 2000, "protein": 140, "proteinMax": 170 },   // proteinMax optional; the validator fails days above it
   "sessionsPerWeek": 3,
   "shopNote": "Round up to pack sizes ...",   // optional line on the shopping list (local shops, units)
   "restDayNote": "Rest day: walk 7–10k steps", // optional, shown on days without "training"

@@ -5,8 +5,8 @@ Always start by reading the private STATUS.md. If you can't reach it, ask the pe
 ## Weekly review
 
 1. Read the sheet's Daily Log and Weekly Review tabs (connector, or ask for an export).
-2. Report briefly: 7-day average weight trend, rules %, workouts done, sleep, the habit.
-3. If the Weekly Review says **ADJUST** (3 flat weeks): suggest ONE change: −100–150 kcal (re-run `targets.py` logic: never below BMR) or +2,000 steps/day. Not both.
+2. Report briefly: 7-day average weight trend, rules %, workouts done, sleep, the habit. If an item is missing (e.g. the habit), ask for it; don't skip it.
+3. If the Weekly Review says **ADJUST** (3 flat weeks): **recommend** ONE change and say why: +2,000 steps/day (default, no food change) or −100–150 kcal (only if the result stays at or above the BMR in STATUS.md). Mention the other only as the alternative if they prefer it. Never both.
 4. Watch for hard-stop signs from [guardrails.md](guardrails.md) (e.g. losing much faster than planned, very low intake notes). If present, pause the deficit and suggest a GP.
 5. Append one line to STATUS.md §Log (date, trend, change if any). Roll lines older than 8 weeks into one summary line.
 

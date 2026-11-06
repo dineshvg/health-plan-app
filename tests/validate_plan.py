@@ -4,7 +4,7 @@
     python3 tests/validate_plan.py app/plan.json --exclude chicken,beef,peanut --private ../my-plans/tracker/settings.json
 
 Fails (exit 1) on: missing meal keys, days outside +/-10 % of the kcal target, days under 90 % of the
-protein target, unknown categories, excluded words anywhere in the plan, private values from the settings
+protein target or over target.proteinMax (optional), unknown categories, excluded words anywhere in the plan, private values from the settings
 anywhere in the plan, or training days that don't match the tracker's sessions.
 """
 import argparse
@@ -78,6 +78,9 @@ for st, wi, week in [(st, wi, w) for st in STYLES for wi, w in enumerate(st.get(
             errors.append(f"week {wi} day {di + 1}: {kcal} kcal is outside +/-10 % of {tk}")
         if prot < 0.9 * tp:
             errors.append(f"week {wi} day {di + 1}: {prot} g protein is under 90 % of {tp}")
+        pmax = p["target"].get("proteinMax")
+        if pmax and prot > pmax:
+            errors.append(f"week {wi} day {di + 1}: {prot} g protein is over proteinMax {pmax}")
         days.append((kcal, prot))
 
 cats = set(p["categories"])
@@ -90,9 +93,10 @@ for it in p["pantry"]:
         errors.append(f"pantry {it['name']!r} has unknown category {it['cat']!r}")
 
 
-def find(word):
-    """Lines of the plan containing word (word start, case-insensitive)."""
-    rx = re.compile(r"(?<![a-z])" + re.escape(word.lower()))
+def find(word, whole=False):
+    """Lines of the plan containing word (case-insensitive). Word start by default, so "chicken" also
+    catches "chickens"; whole=True for private words, so a name like "Raj" doesn't block "rajma"."""
+    rx = re.compile(r"(?<![a-z])" + re.escape(word.lower()) + (r"(?![a-z])" if whole else ""))
     return [s for s in ALL if rx.search(s)]
 
 
@@ -108,7 +112,7 @@ if a.private:
         words.append(s["name"])
     words += [s.get("goalDate")] + [m[1] for m in s.get("milestones", [])]  # dates
     for v in filter(None, words):
-        for hit in find(str(v))[:2]:
+        for hit in find(str(v), whole=True)[:2]:
             errors.append(f"private value {v!r} found in plan.json: {hit[:80]!r}")
     for num in sorted({float(x) for x in [s.get("startWeight"), s.get("goalWeight")] + [m[2] for m in s.get("milestones", [])] if x}):
         n = re.escape(f"{num:g}")

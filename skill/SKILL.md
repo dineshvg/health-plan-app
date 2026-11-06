@@ -19,8 +19,8 @@ Template repo: https://github.com/dineshvg/health-plan-app (public). Reuse it; d
 
 Read [references/guardrails.md](references/guardrails.md) in full before the interview. In short, **no calorie-deficit plan** when the person is under 18, pregnant, has or had an eating disorder (or the conversation suggests one), or wants a goal under BMI 18.5. Say so kindly in plain words and offer what is still safe. `targets.py` refuses some of these (exit 2); the rest are your job.
 
-- **Order:** the hard-stop questions (age, pregnancy/breastfeeding, eating-disorder history, conditions and medication) are asked in the interview. Show **no kcal or protein numbers** until they are answered. Before that you may run `targets.py` as a preview and tell the person in words whether their date is realistic, including the realistic date it gives.
-- **A hard stop ends the build:** don't create repos, don't ask for Google or GitHub accounts, don't write STATUS.md. Give the safe alternative in the chat (e.g. an activity plan without calorie numbers).
+- **Order:** the hard-stop questions (age, pregnancy/breastfeeding, eating-disorder history, conditions and medication) are asked in the interview. Show **no kcal or protein numbers** until they are answered. Before that you may run `targets.py` as a preview and tell the person in words whether their date is realistic, giving the realistic date as a calendar date (e.g. "13 May 2027", not "mid-May") and saying the full working comes once the health questions are answered.
+- **A hard stop ends the build:** don't create repos, don't ask for Google or GitHub accounts, don't write STATUS.md. Give the safe alternative for that case in the chat ([guardrails](references/guardrails.md) table): e.g. an activity plan without calorie numbers for under-18s, but no exercise or meal ideas at all for eating-disorder signs.
 
 ## Modes
 
@@ -36,12 +36,12 @@ Pick one from the request, then follow it. If a `STATUS.md` exists for this pers
 
 ## Stages (mode `new`)
 
-Copy [templates/STATUS.md](templates/STATUS.md) into the private plans repo at stage 1 and keep it current.
+Copy [templates/STATUS.md](templates/STATUS.md) into the private plans repo at the end of stage 2 (once no hard stop applies and you have their GitHub username) and keep it current.
 
 | # | Stage | Who | Read | Done when |
 |---|---|---|---|---|
-| 1 | Interview | 👤 | [guardrails](references/guardrails.md), [interview](references/interview.md) | Every field answered or a stated default; hard stops checked; private plans repo exists with STATUS.md |
-| 2 | Targets | 🤖→👤 | [nutrition](references/nutrition.md) | `targets.py` ran; working shown; person **agreed** the date and kcal; numbers in STATUS.md |
+| 1 | Interview | 👤 | [guardrails](references/guardrails.md), [interview](references/interview.md) | Every field answered or a stated default; hard-stop questions answered and none applies |
+| 2 | Targets | 🤖→👤 | [nutrition](references/nutrition.md) | `targets.py` ran; working shown; person **agreed** the date and kcal; accounts received; private plans repo has STATUS.md with the numbers |
 | 3 | Plans | 🤖 | [plans](references/plans.md) | `plans/training.md`, `plans/food.md`, private `settings.json` written |
 | 4 | App data | 🤖 | [plan-schema](references/plan-schema.md) | Person's public repo has their `app/plan.json`; full validator prints OK |
 | 5 | Tracker | 🤖 | [tracker](references/tracker.md) | Sheet built (connector) or `.xlsx` ready; formulas verified |
@@ -65,6 +65,6 @@ If the person goes quiet mid-stage, write STATUS.md first, then stop with a one-
 | Script | Where | Use |
 |---|---|---|
 | `targets.py` | this skill's `scripts/` | Stage 2 and any number change |
-| `validate_plan.py` | template `tests/` (copy in `scripts/`) | Stage 4, before every push |
-| `build_tracker.py` | template `tracker/` (copy in `scripts/`) | Stage 5 without a Sheets connector |
+| `validate_plan.py` | template `tests/` (the uploaded zip also has a copy in `scripts/`) | Stage 4, before every push |
+| `build_tracker.py` | template `tracker/` (the uploaded zip also has a copy in `scripts/`) | Stage 5 without a Sheets connector |
 | `smoke.js` | template `tests/` | Stage 8 (`npm test`) |
