@@ -1,0 +1,22 @@
+# Stage 1: Interview 👤
+
+One message with all questions, grouped. Then default whatever goes unanswered, say which default you picked, and continue.
+
+## Ask
+
+| Group | Fields | Default if unanswered |
+|---|---|---|
+| Body & goal | age, sex, height, weight, goal weight + date (if the goal is tied to an event, its exact date) | none: age, sex, height, weight and goal are required |
+| Place | city/country (shops, units) | metric, local supermarkets |
+| Training | equipment (gym/home/none), days per week, minutes per session | home, 3 days, 45 min |
+| Life | job/activity, family and schedule constraints | desk job → lower activity factor |
+| Food | diet, allergies, dislikes, cooking time, budget | omnivore, 30 min weekdays, mid budget |
+| Cuisines | one or two they like (each becomes a food style) | one everyday style from local supermarket food |
+| Health | conditions, medication (and whether it's a beta-blocker), pregnancy/breastfeeding, any past eating disorder or difficult relationship with food or dieting, sleep | ask again once if blank; never default. These are the hard-stop questions: ask them every time, for every person |
+| Habits | one habit to cut; alcohol per week | snacks outside the plan; 0 |
+
+## Before leaving the stage
+
+- Check every answer against [guardrails.md](guardrails.md) hard stops. If one applies, stop here: no repo, no STATUS.md, no account questions (SKILL.md §Hard stops).
+- Don't ask for Google or GitHub accounts yet: they come with the stage-2 agreement message, once no hard stop applies.
+- Don't assume the person's country (e.g. "Hausarzt") until they've said it.

@@ -16,7 +16,7 @@ A plan you can carry in your pocket: an installable phone app (PWA) that tells y
 
 ## Use it in 3 steps
 
-1. **Add the skill** to Claude: download [`health-plan-to-app.zip`](https://github.com/dineshvg/health-plan-app/raw/main/skill/health-plan-to-app.zip) and upload it under Settings → Capabilities → Skills (or copy [`skill/SKILL.md`](skill/SKILL.md) into your agent's skills folder).
+1. **Add the skill** to Claude: download [`health-plan-to-app.zip`](https://github.com/dineshvg/health-plan-app/raw/main/skill/health-plan-to-app.zip) and upload it under Settings → Capabilities → Skills (or unzip it into your agent's skills folder). The zip holds `SKILL.md`, its `references/`, a `STATUS.md` template and the scripts.
 2. **Tell the agent your goals**: "Build me a health plan and app with this skill." It asks one round of questions (goal, food, equipment, schedule) and writes the plans, `plan.json` and the tracker.
 3. **Open your app**: follow the agent's sign-in and GitHub Pages steps (about 20 minutes, described below), then install it on your phone.
 
@@ -31,18 +31,18 @@ A plan you can carry in your pocket: an installable phone app (PWA) that tells y
 | `app/` | The PWA: `index.html`, `app.js`, `sw.js`, `manifest.webmanifest`, icons |
 | `app/plan.json` | **Your plan** (public): meals, a rotating set of weeks, rules, pantry, shopping categories. No personal data |
 | `app/config.js` | Your Google OAuth client ID and sheet ID |
-| `tracker/settings.example.json` | Tracker settings: weights, goal, milestones, habit, rules, sessions. Copy to `tracker/settings.json` (git-ignored) |
+| `tracker/settings.example.json` | Tracker settings: weights, goal, milestones, habit, rules, sessions. Copy it into your **private** plans repo and keep that as the only copy |
 | `tracker/build_tracker.py` | Builds the 5-tab tracker (.xlsx) from your private settings |
-| `tests/` | `validate_plan.py` (plan checks + privacy) and `smoke.js` (phone-size browser test with Google mocked); `npm test` runs both |
+| `tests/` | `validate_plan.py` (plan checks + privacy) `smoke.js` (phone-size browser test with Google mocked) and `test_targets.py` (the skill's number rules); `npm test` runs them all and checks the skill zip is up to date |
 | `tracker/LAYOUT.md` | Which cells the app reads and writes |
-| `skill/SKILL.md` | Agent skill: interview → plans → `plan.json` → sheet → deployed app. `skill/health-plan-to-app.zip` is the same file, ready to upload to Claude |
+| `skill/` | Agent skill. `SKILL.md` (modes and stages), `references/` (one file per stage, loaded when needed), `scripts/targets.py` (calorie and protein targets, milestones, safety refusals), `templates/STATUS.md` (resumable progress record, kept in the private repo), `evals/` (test prompts). `python3 skill/build_zip.py` packs `health-plan-to-app.zip` for upload |
 | `media/` | Screenshots and the social preview image (example data only) |
 
 ## Set it up (about 20 minutes)
 
 1. **Copy the repo**: "Use this template" → new **public** repo (free GitHub Pages needs public).
 2. **Write your plan** in `app/plan.json` (or let an agent do it with the skill). Schema below.
-3. **Build the tracker**: copy `tracker/settings.example.json` into your **private** plans repo (or to `tracker/settings.json` here, which is git-ignored) and fill in your numbers. Keep exactly one copy. Then `pip install openpyxl && python3 tracker/build_tracker.py path/to/settings.json` → upload `tracker/tracker.xlsx` to Google Drive → open with Google Sheets → File → Save as Google Sheets. Share it (Editor) with every Google account that should log. Copy its ID from the URL into `SHEET_ID` in `app/config.js`.
+3. **Build the tracker**: copy `tracker/settings.example.json` into your **private** plans repo and fill in your numbers. Keep exactly one copy there (`tracker/settings.json` is git-ignored here only as a safety net). Then `pip install openpyxl && python3 tracker/build_tracker.py path/to/settings.json` → upload `tracker/tracker.xlsx` to Google Drive → open with Google Sheets → File → Save as Google Sheets. Share it (Editor) with every Google account that should log. Copy its ID from the URL into `SHEET_ID` in `app/config.js`.
 4. **Google sign-in** (once):
    1. [console.cloud.google.com](https://console.cloud.google.com) → new project.
    2. APIs & Services → Library → enable **Google Sheets API**.
@@ -52,7 +52,7 @@ A plan you can carry in your pocket: an installable phone app (PWA) that tells y
 5. **Publish**: repo Settings → Pages → Source: **GitHub Actions**. Push to `main`; the app appears at `https://<your-user>.github.io/<repo>/`.
 6. **Install** on your phone: Android Chrome ⋮ → Install app; iPhone Safari Share → Add to Home Screen.
 
-After changing anything in `app/`, run `npm install && npm test` (basic plan checks + phone-size browser test; set `CHROMIUM_PATH` to use an existing Chromium) and the full plan check `python3 tests/validate_plan.py --exclude <diet words> --private path/to/settings.json`, and bump `VERSION` in `app/sw.js` so phones pick up the new version.
+After changing anything in `app/`, run `npm install && npm test` (target-rule checks, skill-zip check, basic plan checks + phone-size browser test; set `CHROMIUM_PATH` to use an existing Chromium) and the full plan check `python3 tests/validate_plan.py --exclude <diet words> --private path/to/settings.json`, and bump `VERSION` in `app/sw.js` so phones pick up the new version.
 
 ## `plan.json` schema
 
@@ -60,7 +60,7 @@ After changing anything in `app/`, run `npm install && npm test` (basic plan che
 {
   "name": "Health plan",                 // app title
   "startDate": "2026-10-05",             // a Monday; week 1 of the plan (the sheet's Dashboard!B2 wins once signed in)
-  "target": { "kcal": 2000, "protein": 140 },
+  "target": { "kcal": 2000, "protein": 140, "proteinMax": 170 },   // proteinMax optional; the validator fails days above it
   "sessionsPerWeek": 3,
   "shopNote": "Round up to pack sizes ...",   // optional line on the shopping list (local shops, units)
   "restDayNote": "Rest day: walk 7–10k steps", // optional, shown on days without "training"
@@ -96,4 +96,4 @@ After changing anything in `app/`, run `npm install && npm test` (basic plan che
 
 ## Privacy
 
-Keep personal details (weights, goals, conditions, habits) out of this repo: it is public, and GitHub Pages publishes everything in `app/`. They belong in `tracker/settings.json` (git-ignored) and your private sheet. Every label in the Log, Train and Stats tabs is read from the sheet's header rows, so the app code stays generic. `python3 tests/validate_plan.py --private path/to/settings.json` fails if a private value leaked into `plan.json`: `privateWords` (name, city, conditions, job…), the habit labels, goal and milestone dates, and weights written as "78 kg". It also checks that training days match the tracker's sessions. `rules` in `plan.json` are public: keep them to generic eating rules. Never commit `client_secret*.json`.
+Keep personal details (weights, goals, conditions, habits) out of this repo: it is public, and GitHub Pages publishes everything in `app/`. They belong in the `settings.json` in your private plans repo and in your private sheet. Every label in the Log, Train and Stats tabs is read from the sheet's header rows, so the app code stays generic. `python3 tests/validate_plan.py --private path/to/settings.json` fails if a private value leaked into `plan.json`: `privateWords` (name, city, conditions, job…), the habit labels, goal and milestone dates, and weights written as "78 kg". It also checks that training days match the tracker's sessions. `rules` in `plan.json` are public: keep them to generic eating rules. Never commit `client_secret*.json`.

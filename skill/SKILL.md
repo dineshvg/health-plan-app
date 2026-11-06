@@ -1,148 +1,70 @@
 ---
 name: health-plan-to-app
-description: Turn someone's health goals into training/food plans, a Google Sheet tracker and an installable phone app (PWA) with daily meals, shopping list and logging. Use when asked to build a fitness/diet plan with tracking or an app.
+description: Turn someone's health goals into training/food plans, a Google Sheet tracker and an installable phone app (PWA) with daily meals, shopping list and logging, then run the weekly review and plan changes. Use when asked to build a fitness/diet plan with tracking or an app, or to resume, review or change one built with this skill.
 ---
 
 # Health plan → tracker → app
 
 Template repo: https://github.com/dineshvg/health-plan-app (public). Reuse it; don't rewrite the app.
-Read its `README.md` (plan.json schema), `tracker/LAYOUT.md` (cell contract) and `tracker/settings.example.json` before starting.
 
-## 0. Guardrails (always)
-- Not medical advice. If the person mentions a condition (heart/BP, diabetes, pregnancy, sleep disorders, eating disorder, injuries, medication):
-  - Add "check with your GP first" to both plans. If they take medication, add that doses may need review as weight drops.
-  - Use the smallest deficit from §2.
-  - Training for heart/BP: RPE ≤ 7 (8 at most later on), no breath-holding or max-effort tests, and get up slowly from the floor. Use sub-max timed tests instead of max tests. Use resting heart rate only if they're not on beta-blockers.
-  - Food for BP: add a low-salt rule and avoid very salty foods (cured/smoked fish, stock cubes, ready meals).
-- Refuse crash goals (see §2).
-- Privacy: two places, never mixed.
-  - **Public** (app repo, published by GitHub Pages): `app/` only, meaning meals, weeks, pantry, generic eating `rules` and categories. Keep `name` generic.
-    - Never public: weights, goal dates, conditions, medication, habits, job, family, city, or the person's name.
-    - Write `rules` so they reveal nothing about the person, e.g. "Protein at every meal". "No sugary drinks" or "Low salt for my BP" belong only in the private `dailyRules`.
-  - **Private**: the plans repo (including the ONE copy of the tracker settings file) and the Google Sheet. The app reads every log, train and stats label from the sheet's header rows after sign-in.
-  - Put the person's name, city, conditions and job in the settings `privateWords` list.
-  - Before every push: `python3 tests/validate_plan.py --exclude <diet words> --private <settings.json>` must print OK. It scans every text in `plan.json`. Also read the diff for anything personal.
-- Never ask for or commit a client secret. The OAuth client ID is public by design.
+## How to think about this
 
-## 1. Interview (one message, then default the rest)
-Ask about:
-- age, sex, height, weight, and goal + date
-- city/country (shops, units)
-- equipment (gym/home/none), training days per week and minutes
-- job/activity, family and schedule constraints
-- food limits (diet, allergies, dislikes, cooking time, budget)
-- one or two cuisines they like to eat (e.g. "Indian and Mediterranean"); each becomes a food style they can switch between. Default: one everyday style using local supermarket food
-- health conditions, sleep
-- one habit to cut (smoking, snacks, sugary drinks…), and alcohol per week
-- the exact Google account addresses that need access (they can't be defaulted), and their GitHub username and the app repo name
+- **Two worlds, never mixed.** The **public app** (`app/`, served by GitHub Pages) knows meals, weeks, pantry and generic rules. The **private side** (plans repo + Google Sheet) knows the person: weights, dates, conditions, habits, name. The app reads every personal label from the sheet after sign-in. When unsure where something goes, it is private.
+- **`plan.json` is a contract**, not prose. The validator and the smoke test enforce it; if they pass, the app works.
+- **Numbers come from a script.** `scripts/targets.py` computes BMR, TDEE, deficit, protein, milestones and a realistic date. Never do this arithmetic by hand, and never "adjust" its output silently.
+- **`STATUS.md` is the map.** It lives in the private plans repo, records each stage's state and every fact later stages need (repo names, sheet ID, URL, agreed numbers). Any session can resume from it. Update it at the end of every stage, before doing anything else.
+- **Person vs agent.** Stages are marked 👤 (needs the person: answers, clicks, consent) or 🤖 (agent alone). Do all 🤖 work you can, then hand the person **one** checklist of clicks, not a drip of requests.
 
-If something goes unanswered, pick a sensible default, say which one you picked, and continue.
+## Hard stops (check before any numbers)
 
-## 2. Numbers (show the person the working)
-- BMR with Mifflin-St Jeor: 10·kg + 6.25·cm − 5·age, then +5 for men or −161 for women.
-- Activity factor:
-  - 1.2: desk job, little exercise
-  - 1.375: desk job + 2–3 workouts per week
-  - 1.55: on-your-feet job (nurse, retail, trades) or 4–5 workouts per week
-  - 1.725: very active
-  - If unsure between two, pick the lower one and say so.
-- Daily deficit:
-  - needed = kg to lose × 7700 ÷ days from `startDate` to the goal date
-  - Pick the deficit from `needed`:
+Read [references/guardrails.md](references/guardrails.md) in full before the interview. In short, **no calorie-deficit plan** when the person is under 18, pregnant, has or had an eating disorder (or the conversation suggests one), or wants a goal under BMI 18.5. Say so kindly in plain words and offer what is still safe. `targets.py` refuses some of these (exit 2); the rest are your job.
 
-    | needed | deficit to use |
-    |---|---|
-    | ≤ 250 | 250 (they'll arrive early, which is fine) |
-    | 250–500 | needed |
-    | 500–750 | 500 by default; say the goal date slips and give the projected date, or use up to 750 if they accept a harder plan |
-    | > 750, or more than 1 % of body weight per week (≈ weight × 11 kcal/day) | the date is unrealistic: propose the date that a 500 deficit gives |
-  - Target kcal = TDEE − deficit, never below BMR.
-  - For muscle gain, use a surplus of +200–300 instead.
-- Projected rate = deficit × 7 ÷ 7700 kg/week.
-- Protein: 1.6–2.0 g per kg of goal weight.
-- Milestones: up to 4, on a straight line from start weight on `startDate` to goal weight on the goal date (the agreed one, after any change above).
-- Write `goalDate` as that agreed date.
+- **Order:** the hard-stop questions (age, pregnancy/breastfeeding, eating-disorder history, conditions and medication) are asked in the interview. Show **no kcal or protein numbers** until they are answered. Before that you may run `targets.py` as a preview and tell the person in words whether their date is realistic, giving the realistic date as a calendar date (e.g. "13 May 2027", not "mid-May") and saying the full working comes once the health questions are answered.
+- **A hard stop ends the build:** don't create repos, don't ask for Google or GitHub accounts, don't write STATUS.md. Give the safe alternative for that case in the chat ([guardrails](references/guardrails.md) table): e.g. an activity plan without calorie numbers for under-18s, but no exercise or meal ideas at all for eating-disorder signs.
 
-## 3. Plans (Markdown in a PRIVATE repo, e.g. `<user>/<name>-plans`)
-- `plans/training.md`:
-  - 12 weeks in 3 phases, sessions A/B/C with warm-up and exercises (sets × reps)
-  - a progression rule, deload weeks 4 and 8, test week 12, and an RPE guide
-  - what comes after week 12 (see §8)
-- `plans/food.md`:
-  - the targets from §2, with the working shown
-  - 6 simple rules
-  - a 2-week rotation per food style, each with a Sunday batch cook and planned leftovers
-  - a pantry list
-- `settings.json`: the ONLY copy of the tracker settings (see §5). It is fine here because this repo is private. Point `build_tracker.py` and `validate_plan.py` at it. Don't keep a second copy in the app repo.
-- Optional: a sleep and habit plan, and a weekly rhythm.
+## Modes
 
-## 4. App data: `app/plan.json` (public repo)
-Create the person's own public repo from the template ("Use this template", or ask them to create an empty public repo and copy the template in). Replace ALL example meals:
-- `meals`: kcal, protein, a short `how`, and `buy` items `{name, qty, unit, cat}` per time it's cooked (local product names). Set `portions` when it's cooked for later.
-- `styles`: one entry per cuisine from the interview, `{key, label, weeks}`, e.g. `{"key": "indian", "label": "Indian home-style"}`. With a single style you may use `weeks` instead.
-  - `weeks`: 2 weeks (Mon..Sun) of `{training?, b, l, s, d, prep?, batch?}`. `"@key"` means leftovers of that meal. Daily totals, leftovers included, within ±10 % of `target`; protein ≥ 90 % of target, in every style.
-  - Styles share `meals`, `pantry` and `target`; reuse snacks and breakfasts across styles where it fits. Use real dishes of that cuisine made from ingredients the local shops sell (name a specialist shop in `shopNote` if one is needed, e.g. an Asian shop for besan).
-  - Each style keeps the same training weekdays and its own Sunday batch → Monday leftovers chain.
-  - Plan a Sunday batch cook that feeds Monday's leftovers.
-  - On `startDate` itself the app cooks an `@` meal fresh.
-- `categories`: shopping aisles in store order. Rename the keys and labels to fit the diet, e.g. "Eggs, tofu & soy" for vegetarians.
-- `training` letters must sit on the same weekdays as the settings `sessions` `dayOffset`s. The validator checks this. For shift workers, say in the plan that A→B→C is a sequence: they do the next session on any free day.
-- `pantry`, `rules` (generic, see §0), `startDate` (a Monday), `sessionsPerWeek`, `shopNote` (local shops, round up to pack sizes), `restDayNote`. Optional meal fields: `freezes`, and `note` (shown when that meal is on the menu, e.g. for a flexible meal).
-- Validate: `python3 tests/validate_plan.py --exclude <diet/allergy words, English and local language> --private <settings.json>` must print OK.
+Pick one from the request, then follow it. If a `STATUS.md` exists for this person, never start `new`.
 
-## 5. Tracker (private Google Sheet)
-- Write the private `settings.json` from `settings.example.json`:
-  - `startDate` = plan start
-  - `privateWords`: the person's name, city, conditions, medication and job
-  - start/goal weight, goal date and milestones (from §2)
-  - the habit (`label`, `weekly`, `freeDays`) and the drinks label
-  - 6 `dailyRules` (short versions of the food rules)
-  - `sessions` `{dayOffset, code, focus}` and the number of `weeks`
-  - `tests`
-- With the Google Sheets connector: create the spreadsheet and reproduce `tracker/build_tracker.py`'s layout exactly:
-  - tabs and every row, column and formula as in `tracker/LAYOUT.md`
-  - conditional-format rules: one sheet per request
-  - set the locale and timezone
-  - add Y/N data validation
-  - verify the formulas: write sample rows, read them back, then clear them
-- Without a connector: run `python3 tracker/build_tracker.py <settings.json>` and give the person the .xlsx to upload with "Save as Google Sheets".
-- Rename headers freely to fit the person (labels come from row 1), but never move columns.
-- Share the sheet as Editor with every account from the interview, and put its ID in `app/config.js` `SHEET_ID`.
+| Mode | When | Do |
+|---|---|---|
+| `new` | No plan yet | Stages 1→9 below |
+| `resume` | A STATUS.md exists with open stages | Read it, report where things stand in 2-3 lines, continue at the first stage not `done` |
+| `weekly-review` | Sunday check-in | [references/weekly-loop.md](references/weekly-loop.md) §Weekly review |
+| `change-plan` | Swap meals, change days, new cuisine, new numbers | [references/weekly-loop.md](references/weekly-loop.md) §Change the plan |
+| `next-block` | Week 11+ of a 12-week block | [references/weekly-loop.md](references/weekly-loop.md) §Next block |
 
-## 6. Sign-in + hosting (the person does the clicks; give exact steps)
-- Google Cloud:
-  1. Create a new project and enable the Google Sheets API.
-  2. Set up the consent screen as External/Testing, with test users.
-  3. Under Clients, create a Web application with the origin `https://<user>.github.io`.
-  4. They send you the Client ID; put it in `CLIENT_ID` in `app/config.js`.
-- In the repo: Settings → Pages → Source: GitHub Actions. The included workflow deploys `app/` on every push.
-  - The app URL is `https://<user>.github.io/<repo>/`.
-  - Private repos can't use free Pages.
-- Bump `VERSION` in `app/sw.js` on every deploy.
-- Don't use Google Apps Script web apps for logging. On phones signed into several Google accounts they fail with "Sorry, unable to open the file".
+## Stages (mode `new`)
 
-## 7. Test before saying done
-1. The full plan check from §4: `python3 tests/validate_plan.py --exclude … --private …`.
-2. `npm install && npm test`, or with an existing Chromium: `CHROMIUM_PATH=/path/to/chromium node tests/smoke.js`. It runs the basic plan check (no flags) plus a 390×844 browser run with Google mocked: meals, shopping, pantry "low", log labels from the sheet, save to row `2 + days since start`, and no page errors.
+Copy [templates/STATUS.md](templates/STATUS.md) into the private plans repo at the end of stage 2 (once no hard stop applies and you have their GitHub username) and keep it current.
 
-After pushing, confirm the Pages workflow is green.
+| # | Stage | Who | Read | Done when |
+|---|---|---|---|---|
+| 1 | Interview | 👤 | [guardrails](references/guardrails.md), [interview](references/interview.md) | Every field answered or a stated default; hard-stop questions answered and none applies |
+| 2 | Targets | 🤖→👤 | [nutrition](references/nutrition.md) | `targets.py` ran; working shown; person **agreed** the date and kcal; accounts received; private plans repo has STATUS.md with the numbers |
+| 3 | Plans | 🤖 | [plans](references/plans.md) | `plans/training.md`, `plans/food.md`, private `settings.json` written |
+| 4 | App data | 🤖 | [plan-schema](references/plan-schema.md) | Person's public repo has their `app/plan.json`; full validator prints OK |
+| 5 | Tracker | 🤖 | [tracker](references/tracker.md) | Sheet built (connector) or `.xlsx` ready; formulas verified |
+| 6 | Person's clicks | 👤 | [hosting](references/hosting.md) | One checklist sent; Client ID received; sheet shared; Pages source set |
+| 7 | Wire + deploy | 🤖 | [hosting](references/hosting.md) | `config.js` filled, `VERSION` bumped, pushed, Pages workflow green |
+| 8 | Verify | 🤖 | [verify](references/verify.md) | All checks pass; live URL loads |
+| 9 | Hand over | 🤖 | [verify](references/verify.md) §Hand over | Deliverables sent; STATUS.md says `done`; weekly loop offered |
 
-## 8. Weekly loop and next block
-- Offer a Sunday routine:
-  - read Daily Log + Weekly Review
-  - report the 7-day average trend, rules %, workouts, sleep and the habit
-  - if "ADJUST" (3 flat weeks): suggest ONE change (−100–150 kcal or +2,000 steps/day)
-- In week 11, offer the next 12-week block:
-  - same structure, progressed loads, new test week
-  - append Workouts rows (weeks 13–24) to the sheet
-- When the plan changes:
-  - edit `plan.json` (public) and the private docs
-  - re-run the tests, bump the service-worker version, push
+If the person goes quiet mid-stage, write STATUS.md first, then stop with a one-line "here's where we are, here's what I need".
 
-## Deliverables
-- private plans repo (plans + settings.json)
-- private Sheet, shared with all accounts
-- public app repo + live URL
-- install steps (Android ⋮ → Install app; iPhone Share → Add to Home Screen)
-- sign-in steps
-- a memory note with the sheet ID, repos and URL
+## Never
+
+- Never put anything personal in `app/` or the public repo, even in a commit message. Run the validator with `--private` before **every** push and read the diff.
+- Never ask for or commit a client secret. The OAuth Client ID is public by design.
+- Never move tracker columns; the app reads cells by position ([tracker](references/tracker.md)).
+- Never use Google Apps Script web apps for logging (they fail on phones with several Google accounts).
+- Never present the plan as medical advice.
+
+## Scripts
+
+| Script | Where | Use |
+|---|---|---|
+| `targets.py` | this skill's `scripts/` | Stage 2 and any number change |
+| `validate_plan.py` | template `tests/` (the uploaded zip also has a copy in `scripts/`) | Stage 4, before every push |
+| `build_tracker.py` | template `tracker/` (the uploaded zip also has a copy in `scripts/`) | Stage 5 without a Sheets connector |
+| `smoke.js` | template `tests/` | Stage 8 (`npm test`) |

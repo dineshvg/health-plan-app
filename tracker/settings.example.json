@@ -1,5 +1,5 @@
 {
-  "_comment": "PRIVATE: keep the real file in your private plans repo (or as tracker/settings.json, which is git-ignored). privateWords = anything that must never appear in the public app (name, city, conditions, job...). Never commit real values to a public repo.",
+  "_comment": "PRIVATE: keep the real file in your private plans repo, as the only copy (tracker/settings.json is git-ignored here only as a safety net). privateWords = anything that must never appear in the public app (name, city, conditions, job...). Never commit real values to a public repo.",
   "name": "Health plan",
   "privateWords": [
     "Alex",
